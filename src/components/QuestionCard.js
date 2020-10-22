@@ -70,8 +70,9 @@ const QuestionCard = (props) => {
         </View>
         <View
           style={{
-            paddingLeft: 15,
+            paddingLeft: 10,
             flex: 1,
+            paddingTop: 5,
           }}
         >
           <Text
