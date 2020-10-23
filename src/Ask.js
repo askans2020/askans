@@ -87,6 +87,7 @@ class Ask extends Component {
                   style={{
                     margin: 5,
                     padding: 0,
+                    marginHorizontal: 10,
                   }}
                 >
                   <Picker
