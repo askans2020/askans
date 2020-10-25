@@ -12,9 +12,24 @@ import Feed from "./src/Feed";
 import Ask from "./src/Ask";
 import Notification from "./src/Notification";
 import Profile from "./src/Profile";
+import Question from "./src/Question";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+const FeedScreens = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        gestureEnabled: false,
+      }}
+    >
+      <Stack.Screen name="Feed" component={Feed} />
+      <Stack.Screen name="Question" component={Question} />
+    </Stack.Navigator>
+  );
+};
 
 //Displays Tabs in the home screen
 const HomeTabs = () => {
@@ -39,7 +54,7 @@ const HomeTabs = () => {
         tabBarLabel: () => null,
       })}
     >
-      <Tab.Screen name="Feed" component={Feed} />
+      <Tab.Screen name="Feed" component={FeedScreens} />
       <Tab.Screen name="Ask" component={Ask} />
       <Tab.Screen name="Notification" component={Notification} />
       <Tab.Screen name="Profile" component={Profile} />

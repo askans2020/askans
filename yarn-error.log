@@ -1,30 +1,20 @@
 Arguments: 
-  /usr/local/Cellar/node/14.4.0/bin/node /usr/local/Cellar/yarn/1.22.4/libexec/bin/yarn.js add react-native-gesture-handler react-native-reanimated react-naitve-screen
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add @react-native-community/picker
 
 PATH: 
-  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin
+  C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\henok\bin;C:\Program Files (x86)\Intel\iCLS Client;C:\Users\henok\AppData\Local\Programs\Python\Python37-32";C:\Program Files\Intel\iCLS Client;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\Git\cmd;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\WINDOWS\System32\OpenSSH;C:\Program Files (x86)\Brackets\command;C:\ProgramData\chocolatey\bin;C:\Program Files\NVIDIA Corporation\Nsight Compute 2019.3.0;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files (x86)\Yarn\bin;C:\Program Files\Intel\WiFi\bin;C:\Program Files\Common Files\Intel\WirelessCommon;C:\Program Files\Java\jdk1.8.0_131;C:\Users\henok\AppData\Local\Android\Sdk;C:\Users\henok\AppData\Local\Android\Sdk\platform-tools;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;C:\Program Files\nodejs;C:\Program Files\Java\jdk-14\bin;C:\Users\henok\AppData\Local\Programs\Python\Python38-32\Scripts;C:\Users\henok\AppData\Local\Programs\Python\Python38-32;C:\Program Files\nodejs;C:\Users\henok\Anaconda3;C:\Users\henok\Anaconda3\Library\mingw-w64\bin;C:\Users\henok\Anaconda3\Library\usr\bin;C:\Users\henok\Anaconda3\Library\bin;C:\Users\henok\Anaconda3\Scripts;C:\Users\henok\AppData\Local\Microsoft\WindowsApps;C:\Users\henok\AppData\Roaming\Composer\vendor\bin;C:\Users\henok\AppData\Local\atom\bin;C:\Program Files\Microsoft VS Code\bin;C:\Users\henok\AppData\Local\GitHubDesktop\bin;C:\Users\henok\AppData\Local\Microsoft\WindowsApps;C:\Users\henok\AppData\Local\Programs\Microsoft VS Code\bin;C:\src\flutter\bin;C:\Users\henok\AppData\Local\Yarn\bin;C:\Users\henok\AppData\Roaming\npm;C:\Users\henok\AppData\Local\Android\Sdk\platform-tools;C:\Users\henok\AppData\Local\Android\Sdk;C:\Users\henok\AppData\Local\Android\Sdk\tools;C:\Users\henok\AppData\Roaming\npm\node_modules;C:\Users\henok\AppData\Roaming\npm;C:\Program Files\Java\jdk1.8.0_131\bin;C:\Program Files\Java\jdk-14\bin
 
 Yarn version: 
-  1.22.4
+  1.16.0
 
 Node version: 
-  14.4.0
+  12.18.1
 
 Platform: 
-  darwin x64
+  win32 x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/react-naitve-screen: Not found
-      at Request.params.callback [as _callback] (/usr/local/Cellar/yarn/1.22.4/libexec/lib/cli.js:66987:18)
-      at Request.self.callback (/usr/local/Cellar/yarn/1.22.4/libexec/lib/cli.js:140748:22)
-      at Request.emit (events.js:315:20)
-      at Request.<anonymous> (/usr/local/Cellar/yarn/1.22.4/libexec/lib/cli.js:141720:10)
-      at Request.emit (events.js:315:20)
-      at IncomingMessage.<anonymous> (/usr/local/Cellar/yarn/1.22.4/libexec/lib/cli.js:141642:12)
-      at Object.onceWrapper (events.js:421:28)
-      at IncomingMessage.emit (events.js:327:22)
-      at endReadableNT (_stream_readable.js:1224:12)
-      at processTicksAndRejections (internal/process/task_queues.js:84:21)
+  Error: EPERM: operation not permitted, unlink 'C:\Users\henok\Desktop\askans\node_modules\@babel\compat-data\node_modules\.bin'
 
 npm manifest: 
   {
@@ -37,6 +27,8 @@ npm manifest:
       "eject": "expo eject"
     },
     "dependencies": {
+      "@react-native-community/masked-view": "^0.1.10",
+      "@react-native-community/picker": "^1.8.1",
       "@react-navigation/bottom-tabs": "^5.9.2",
       "@react-navigation/native": "^5.7.6",
       "@react-navigation/stack": "^5.9.3",
@@ -46,10 +38,14 @@ npm manifest:
       "react-dom": "16.13.1",
       "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.3.tar.gz",
       "react-native-elements": "^2.3.2",
-      "react-native-gesture-handler": "^1.8.0",
+      "react-native-gesture-handler": "~1.7.0",
+      "react-native-pell-rich-editor": "^1.3.0",
       "react-native-reanimated": "^1.13.1",
-      "react-native-screens": "^2.11.0",
-      "react-native-web": "~0.13.12"
+      "react-native-safe-area-context": "3.1.4",
+      "react-native-screen": "^1.0.1",
+      "react-native-screens": "~2.10.1",
+      "react-native-web": "~0.13.12",
+      "react-native-webview": "^10.9.2"
     },
     "devDependencies": {
       "@babel/core": "~7.9.0"
@@ -1075,6 +1071,13 @@ Lockfile:
       exec-sh "^0.3.2"
       minimist "^1.2.0"
   
+  "@egjs/hammerjs@^2.0.17":
+    version "2.0.17"
+    resolved "https://registry.yarnpkg.com/@egjs/hammerjs/-/hammerjs-2.0.17.tgz#5dc02af75a6a06e4c2db0202cae38c9263895124"
+    integrity sha512-XQsZgjm2EcVUiZQf11UBJQfmZeEmOW8DpI1gsFeln6w0ae0ii4dMQEQ0kjl6DspdWX1aGY1/loyXnP0JS06e/A==
+    dependencies:
+      "@types/hammerjs" "^2.0.36"
+  
   "@expo/configure-splash-screen@0.2.0":
     version "0.2.0"
     resolved "https://registry.yarnpkg.com/@expo/configure-splash-screen/-/configure-splash-screen-0.2.0.tgz#84f9f71363259f16fd0073636a198c750a3cdd7c"
@@ -1316,6 +1319,16 @@ Lockfile:
       sudo-prompt "^9.0.0"
       wcwidth "^1.0.1"
   
+  "@react-native-community/masked-view@^0.1.10":
+    version "0.1.10"
+    resolved "https://registry.yarnpkg.com/@react-native-community/masked-view/-/masked-view-0.1.10.tgz#5dda643e19e587793bc2034dd9bf7398ad43d401"
+    integrity sha512-rk4sWFsmtOw8oyx8SD3KSvawwaK7gRBSEIy2TAwURyGt+3TizssXP1r8nx3zY+R7v2vYYHXZ+k2/GULAT/bcaQ==
+  
+  "@react-native-community/picker@^1.8.1":
+    version "1.8.1"
+    resolved "https://registry.yarnpkg.com/@react-native-community/picker/-/picker-1.8.1.tgz#94f14f0aad98fa7592967b941be97deec95c3805"
+    integrity sha512-Sj9DzX1CSnmYiuEQ5fQhExoo4XjSKoZkqLPAAybycq6RHtCuWppf+eJXRMCOJki25BlKSSt+qVqg0fIe//ujNQ==
+  
   "@react-navigation/bottom-tabs@^5.9.2":
     version "5.9.2"
     resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-5.9.2.tgz#b071d9f39b275d4ea256df7bfb1ee83bbddeebeb"
@@ -1358,6 +1371,11 @@ Lockfile:
     dependencies:
       color "^3.1.2"
       react-native-iphone-x-helper "^1.2.1"
+  
+  "@types/hammerjs@^2.0.36":
+    version "2.0.36"
+    resolved "https://registry.yarnpkg.com/@types/hammerjs/-/hammerjs-2.0.36.tgz#17ce0a235e9ffbcdcdf5095646b374c2bf615a4c"
+    integrity sha512-7TUK/k2/QGpEAv/BCwSHlYu3NXZhQ9ZwBYpzr9tjlPIL2C5BeGhH3DmVavRx3ZNyELX5TLC91JTz/cen6AAtIQ==
   
   "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
     version "2.0.3"
@@ -2480,6 +2498,11 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
     integrity sha1-Aljq5NPQwJdN4cFpGI7wBR0dGYg=
   
+  escape-string-regexp@2.0.0:
+    version "2.0.0"
+    resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz#a30304e99daa32e23b2fd20f51babd07cffca344"
+    integrity sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w==
+  
   escape-string-regexp@^1.0.5:
     version "1.0.5"
     resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
@@ -3054,6 +3077,11 @@ Lockfile:
     dependencies:
       source-map "^0.7.3"
   
+  hoist-non-react-statics@^2.3.1:
+    version "2.5.5"
+    resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
+    integrity sha512-rqcy4pJo55FTTLWt+bU8ukscqHeE/e9KWvsOW2b/a3afxQZhwkQdT1rPPCJ0rYXdj4vNcasY8zHTH+jF/qStxw==
+  
   hoist-non-react-statics@^3.1.0:
     version "3.3.2"
     resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
@@ -3154,7 +3182,7 @@ Lockfile:
       strip-ansi "^4.0.0"
       through "^2.3.6"
   
-  invariant@^2.2.2, invariant@^2.2.4:
+  invariant@2.2.4, invariant@^2.2.2, invariant@^2.2.4:
     version "2.2.4"
     resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
     integrity sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==
@@ -4702,10 +4730,25 @@ Lockfile:
       react-native-ratings "^7.2.0"
       react-native-status-bar-height "^2.5.0"
   
+  react-native-gesture-handler@~1.7.0:
+    version "1.7.0"
+    resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.7.0.tgz#0ef74a5ba836832e497dc49eb1ce58baa6c617e5"
+    integrity sha512-1CrjJf8Z6Iz2XWzfZknYtsm2sud5Lu/pLhhokkgBIKttxqGDtetDEVFDJOTJWJyKCrUPk0X5tnWi/diSF4q++w==
+    dependencies:
+      "@egjs/hammerjs" "^2.0.17"
+      hoist-non-react-statics "^2.3.1"
+      invariant "^2.2.4"
+      prop-types "^15.7.2"
+  
   react-native-iphone-x-helper@^1.2.1:
     version "1.2.1"
     resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.2.1.tgz#645e2ffbbb49e80844bb4cbbe34a126fda1e6772"
     integrity sha512-/VbpIEp8tSNNHIvstuA3Swx610whci1Zpc9mqNkqn14DkMbw+ORviln2u0XyHG1kPvvwTNGZY6QpeFwxYaSdbQ==
+  
+  react-native-pell-rich-editor@^1.3.0:
+    version "1.3.0"
+    resolved "https://registry.yarnpkg.com/react-native-pell-rich-editor/-/react-native-pell-rich-editor-1.3.0.tgz#c58ad4a88188884b84cb3e81025a0639e6e75594"
+    integrity sha512-inRF/iKO5wdsZ43G3H4yM101HDuv3z2EXjeayi+u32FCs5caLfmeU5LEx6y1If7vYKhMiI0htimvfTqSUk7Fww==
   
   react-native-ratings@^7.2.0:
     version "7.3.0"
@@ -4715,10 +4758,27 @@ Lockfile:
       lodash "^4.17.15"
       prop-types "^15.7.2"
   
+  react-native-reanimated@^1.13.1:
+    version "1.13.1"
+    resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-1.13.1.tgz#c370c32cc4d447ae896cb029bb9c6a2f7608c5b4"
+    integrity sha512-3sF46jts9MbktgIasf0sTM8uhOYO5a5Q3YyQ4X1jjSE82n/fY2nW3XTFsLGfLEpK2ir4XSDhQWVgFHazaXZTww==
+    dependencies:
+      fbjs "^1.0.0"
+  
   react-native-safe-area-context@3.1.4:
     version "3.1.4"
     resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-3.1.4.tgz#9b7f883a5ae8da6218d17467a350434005893602"
     integrity sha512-bXx3hqz4LovFoMnJIRGIWL2oJ/PHadXviBKvgZV9yNErtURQLJSn0yfQytVtiqslhaBMZOJwH4R6HiClyofvBg==
+  
+  react-native-screen@^1.0.1:
+    version "1.0.1"
+    resolved "https://registry.yarnpkg.com/react-native-screen/-/react-native-screen-1.0.1.tgz#80598bb86ade91e2fd277dfe6423132371eadb49"
+    integrity sha512-wdgUV2B/1XIBG1zhyLWtCkDwc2CpfF/TiZdkRnRtSlgibc6Rzjnc96cjYjRLKq8xS229m9+VXP2rbciZLDaBaQ==
+  
+  react-native-screens@~2.10.1:
+    version "2.10.1"
+    resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.10.1.tgz#06d22fae87ef0ce51c616c34a199726db1403b95"
+    integrity sha512-Z2kKSk4AwWRQNCBmTjViuBQK0/Lx0jc25TZptn/2gKYUCOuVRvCekoA26u0Tsb3BIQ8tWDsZW14OwDlFUXW1aw==
   
   react-native-status-bar-height@^2.5.0:
     version "2.5.0"
@@ -4739,6 +4799,14 @@ Lockfile:
       normalize-css-color "^1.0.2"
       prop-types "^15.6.0"
       react-timer-mixin "^0.13.4"
+  
+  react-native-webview@^10.9.2:
+    version "10.9.2"
+    resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-10.9.2.tgz#6dbfcfefb0684a6665e346c0eca8040cbdb5fb75"
+    integrity sha512-bEIHmD1uH3M95V8cZf45MWpSV/FdxKcrlOOpmfAO5arbA9Wd4CjrB2BYInYkMlY3SfHmUN9NTfz5HoQpIS6GTQ==
+    dependencies:
+      escape-string-regexp "2.0.0"
+      invariant "2.2.4"
   
   "react-native@https://github.com/expo/react-native/archive/sdk-39.0.3.tar.gz":
     version "0.63.2"
