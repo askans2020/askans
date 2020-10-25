@@ -13,16 +13,31 @@ import Ask from "./src/Ask";
 import Notification from "./src/Notification";
 import Profile from "./src/Profile";
 import Question from "./src/Question";
+import EditProfile from "./src/EditProfile";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+const ProfileScreen = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        gestureEnabled: true,
+      }}
+    >
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
+    </Stack.Navigator>
+  );
+};
 
 const FeedScreens = () => {
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        gestureEnabled: false,
+        gestureEnabled: true,
       }}
     >
       <Stack.Screen name="Feed" component={Feed} />
@@ -57,7 +72,7 @@ const HomeTabs = () => {
       <Tab.Screen name="Feed" component={FeedScreens} />
       <Tab.Screen name="Ask" component={Ask} />
       <Tab.Screen name="Notification" component={Notification} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 };
