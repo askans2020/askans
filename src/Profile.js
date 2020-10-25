@@ -32,14 +32,14 @@ const Profile = ({ navigation }) => {
                 "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
             }}
           >
-            <Accessory iconStyle={{ size: "" }} />
+            <Accessory />
           </Avatar>
           <Text style={{ marginLeft: 20, fontSize: 22, fontWeight: "500" }}>
-            Hiwot
+            Hiwot Doe
           </Text>
         </View>
         <View style={{ marginTop: 20 }}>
-          <Text style={{ fontSize: 20 }}>
+          <Text style={{ fontSize: 16 }}>
             lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec
             odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis.
             Suspendisse urna nibh.

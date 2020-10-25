@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { Avatar, Icon } from "react-native-elements";
 
 const QuestionCard = (props) => {
@@ -12,6 +12,7 @@ const QuestionCard = (props) => {
     upvotes,
     downvotes,
     answers,
+    navigation,
   } = props;
 
   return (
@@ -49,12 +50,15 @@ const QuestionCard = (props) => {
           <Text>{date}</Text>
         </View>
       </View>
-      <View style={{ margin: 5, padding: 5 }}>
+      <TouchableOpacity
+        style={{ margin: 5, padding: 5 }}
+        onPress={() => navigation.navigate("Question")}
+      >
         <Text style={{ fontWeight: "600", marginBottom: 8, fontSize: 18 }}>
           {title}
         </Text>
         <Text>{question}</Text>
-      </View>
+      </TouchableOpacity>
       <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }}>
         <View style={{ paddingLeft: 5, flexDirection: "row" }}>
           <Icon name="thumbs-up" type="font-awesome" />

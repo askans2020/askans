@@ -86,6 +86,7 @@ class Feed extends Component {
                 answers={question.answers}
                 date={question.date}
                 key={key}
+                navigation={this.props.navigation}
               />
             );
           })}
