@@ -11,8 +11,12 @@ import {
 } from "react-native";
 import { Header, Avatar, Input, Button } from "react-native-elements";
 import { Picker } from "@react-native-community/picker";
+import DropDownPicker from "react-native-dropdown-picker";
 
 class Ask extends Component {
+  state = {
+    category: "TECHNOLOGY",
+  };
   richText = React.createRef();
 
   render() {
@@ -75,34 +79,54 @@ class Ask extends Component {
                   </View>
                 </View>
                 <View style={{ margin: 5 }}>
-                  <Input placeholder="Add question title." multiline={true} />
+                  <TextInput
+                    style={styles.titleinput}
+                    placeholder="Add question title."
+                    multiline={true}
+                  />
                 </View>
-                <View style={{ margin: 5 }}>
-                  <Input
+                <View style={{ margin: 5, marginTop: 5 }}>
+                  <TextInput
+                    style={styles.detailinput}
                     placeholder="Add more details for your question."
                     multiline={true}
                   />
                 </View>
-                <View
-                  style={{
-                    margin: 5,
-                    padding: 0,
-                    marginHorizontal: 10,
-                  }}
-                >
-                  <Picker
-                    selectedValue={"category"}
-                    mode={"dropdown"}
-                    itemStyle={{ padding: 0, margin: 0, fontSize: 15 }}
-                  >
-                    <Picker.Item label="Technology" value="java" />
-                    <Picker.Item label="Science" value="js" />
-                    <Picker.Item label="Math" value="js" />
-                    <Picker.Item label="Select Category" value="category" />
-                    <Picker.Item label="Artificial Intelligence" value="js" />
-                    <Picker.Item label="Programming" value="js" />
-                  </Picker>
-                  <Button title="Ask" />
+
+                <View>
+                  <View style={styles.dropdown}>
+                    <DropDownPicker
+                      style={{}}
+                      items={[
+                        {
+                          label: "TECHNOLOGY",
+                          value: "technology",
+                        },
+                        { label: "ENGLISH", value: "english" },
+                        { label: "SCIENCE", value: "science" },
+                        { label: "MATH", value: "math" },
+                        {
+                          label: "ARTIFICIAL INTELLIGENCE",
+                          value: "artificial intelligence",
+                        },
+                      ]}
+                      //defaultValue={this.state.any}
+                      style={{ backgroundColor: "#fafafa" }}
+                      itemStyle={{
+                        justifyContent: "flex-start",
+                      }}
+                      dropDownStyle={{ backgroundColor: "#fafafa" }}
+                      onChangeItem={(item) =>
+                        this.setState({
+                          category: item.value,
+                        })
+                      }
+                    />
+                  </View>
+                  <Button
+                    style={{ marginTop: 20, marginHorizontal: 10 }}
+                    title="Ask"
+                  />
                 </View>
               </View>
             </TouchableWithoutFeedback>
@@ -112,4 +136,42 @@ class Ask extends Component {
     );
   }
 }
+const styles = StyleSheet.create({
+  dropdown: {
+    zIndex: 100,
+    marginTop: 5,
+    borderWidth: 0.25,
+    minHeight: 50,
+    borderRadius: 4,
+    padding: 10,
+    fontSize: 15,
+    backgroundColor: "white",
+    borderColor: "gray",
+    marginBottom: 10,
+    marginHorizontal: 10,
+  },
+  titleinput: {
+    borderWidth: 0.25,
+    minHeight: 50,
+    borderRadius: 4,
+    padding: 10,
+    fontSize: 18,
+    backgroundColor: "white",
+    borderColor: "gray",
+    marginBottom: 10,
+    marginHorizontal: 5,
+    fontWeight: "bold",
+  },
+  detailinput: {
+    borderWidth: 0.25,
+    minHeight: 150,
+    borderRadius: 4,
+    padding: 10,
+    fontSize: 15,
+    backgroundColor: "white",
+    borderColor: "gray",
+    marginBottom: 10,
+    marginHorizontal: 5,
+  },
+});
 export default Ask;

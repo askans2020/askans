@@ -1,11 +1,9 @@
 import React, { Component } from "react";
-import { View, Text, ScrollView, TextInput, Stylesheet } from "react-native";
+import { View, Text, ScrollView, TextInput, StyleSheet } from "react-native";
 import { Header, Avatar, Input, Button } from "react-native-elements";
 import { Picker } from "@react-native-community/picker";
 import DropDownPicker from "react-native-dropdown-picker";
-//import Icon from "react-native-vector-icons/Feather";
 
-//import RNPickerSelect from "react-native-picker-select";
 class EditProfile extends Component {
   state = {
     gender: "female",
@@ -102,19 +100,7 @@ class EditProfile extends Component {
               placeholder=" Last Name"
             />
 
-            <View
-              style={{
-                marginTop: 15,
-                borderWidth: 0.25,
-                minHeight: 50,
-                borderRadius: 4,
-                padding: 10,
-                fontSize: 15,
-                backgroundColor: "white",
-                borderColor: "gray",
-                marginBottom: 10,
-              }}
-            >
+            <View style={styles.dropdown}>
               <DropDownPicker
                 items={[
                   {
@@ -141,19 +127,7 @@ class EditProfile extends Component {
                 }
               />
             </View>
-            <View
-              style={{
-                marginTop: 15,
-                borderWidth: 0.25,
-                minHeight: 50,
-                borderRadius: 4,
-                padding: 10,
-                fontSize: 15,
-                backgroundColor: "white",
-                borderColor: "gray",
-                marginBottom: 10,
-              }}
-            >
+            <View style={[styles.dropdown, { zIndex: 90 }]}>
               <DropDownPicker
                 style={{ marginTop: 50 }}
                 items={[
@@ -189,5 +163,18 @@ class EditProfile extends Component {
     );
   }
 }
-
+const styles = StyleSheet.create({
+  dropdown: {
+    zIndex: 100,
+    marginTop: 15,
+    borderWidth: 0.25,
+    minHeight: 50,
+    borderRadius: 4,
+    padding: 10,
+    fontSize: 15,
+    backgroundColor: "white",
+    borderColor: "gray",
+    marginBottom: 10,
+  },
+});
 export default EditProfile;
