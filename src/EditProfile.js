@@ -59,16 +59,7 @@ class EditProfile extends Component {
             <View style={{ marginVertical: 10 }}>
               <TextInput
                 multiline={true}
-                style={{
-                  borderWidth: 0.25,
-                  minHeight: 150,
-                  borderRadius: 4,
-                  padding: 10,
-                  fontSize: 15,
-                  backgroundColor: "white",
-                  borderColor: "gray",
-                  marginBottom: 10,
-                }}
+                style={[styles.inputContainer, { minHeight: 150 }]}
                 placeholder="Update bio..."
               />
               <Button style={{ marginLeft: 200 }} title="Update bio" />
@@ -80,29 +71,11 @@ class EditProfile extends Component {
               }}
             >
               <TextInput
-                style={{
-                  borderWidth: 0.25,
-                  minHeight: 50,
-                  borderRadius: 4,
-                  padding: 10,
-                  fontSize: 15,
-                  backgroundColor: "white",
-                  borderColor: "gray",
-                  marginBottom: 10,
-                }}
+                style={styles.inputContainer}
                 placeholder="First Name"
               />
               <TextInput
-                style={{
-                  borderWidth: 0.25,
-                  minHeight: 50,
-                  borderRadius: 4,
-                  padding: 10,
-                  fontSize: 15,
-                  backgroundColor: "white",
-                  borderColor: "gray",
-                  marginBottom: 10,
-                }}
+                style={styles.inputContainer}
                 placeholder=" Last Name"
               />
 
@@ -171,6 +144,19 @@ class EditProfile extends Component {
   }
 }
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  inputContainer: {
+    borderWidth: 0.25,
+    minHeight: 50,
+    borderRadius: 4,
+    padding: 10,
+    fontSize: 15,
+    backgroundColor: "white",
+    borderColor: "gray",
+    marginBottom: 10,
+  },
   dropdown: {
     zIndex: 100,
     marginTop: 15,

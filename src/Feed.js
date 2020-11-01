@@ -9,6 +9,7 @@ class Feed extends Component {
   state = {
     questions: [
       {
+        id: 1,
         name: "John Doe",
         date: "MM/DD/YYYY",
         profileImage:
@@ -19,8 +20,10 @@ class Feed extends Component {
         upvotes: 123,
         downvotes: 10,
         answers: 24,
+        upvoted: false,
       },
       {
+        id: 2,
         name: "Hiwot Doe",
         date: "MM/DD/YYYY",
         profileImage:
@@ -31,8 +34,10 @@ class Feed extends Component {
         upvotes: 432,
         downvotes: 12,
         answers: 58,
+        upvoted: false,
       },
       {
+        id: 3,
         name: "Henok Doe",
         date: "MM/DD/YYYY",
         profileImage:
@@ -43,6 +48,7 @@ class Feed extends Component {
         upvotes: 432,
         downvotes: 12,
         answers: 58,
+        upvoted: false,
       },
     ],
     topics: [
@@ -53,6 +59,37 @@ class Feed extends Component {
       "Programming",
       "Jocks",
     ],
+  };
+
+  handleUpvote = (questionId) => {
+    let questions = this.state.questions;
+
+    let newVals = questions.map((q) => {
+      if (q.id == questionId) {
+        q.upvotes += q.upvoted ? -1 : 1;
+        q.upvoted = !q.upvoted;
+      }
+      return q;
+    });
+
+    this.setState({
+      questions: newVals,
+    });
+  };
+
+  handleDownvote = (questionId) => {
+    let questions = this.state.questions;
+
+    let newVals = questions.map((q) => {
+      if (q.id == questionId) {
+        q.downvotes++;
+      }
+      return q;
+    });
+
+    this.setState({
+      questions: newVals,
+    });
   };
 
   render() {
@@ -87,6 +124,10 @@ class Feed extends Component {
                 date={question.date}
                 key={key}
                 navigation={this.props.navigation}
+                upvote={(questionId) => this.handleUpvote(questionId)}
+                downvote={(questionId) => this.handleDownvote(questionId)}
+                upvoted={question.upvoted}
+                id={question.id}
               />
             );
           })}
