@@ -28,6 +28,7 @@ const ProfileScreen = () => {
     >
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen name="Question" component={Question} />
     </Stack.Navigator>
   );
 };

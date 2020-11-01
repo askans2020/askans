@@ -8,18 +8,13 @@ import {
   Button,
   ButtonGroup,
 } from "react-native-elements";
+import QuestionCard from "./components/QuestionCard";
 
-const Profile = ({ navigation, upvotes, downvotes, answers }) => {
+const Profile = ({ navigation }) => {
   return (
     <View
       style={{
         flex: 1,
-        margin: 5,
-        backgroundColor: "white",
-        borderWidth: 0.25,
-        borderColor: "gray",
-        padding: 5,
-        borderRadius: 5,
       }}
     >
       <Header
@@ -56,7 +51,7 @@ const Profile = ({ navigation, upvotes, downvotes, answers }) => {
             </Text>
           </View>
           <View style={{ marginTop: 20 }}>
-            <Text style={{ fontSize: 20 }}>
+            <Text style={{ fontSize: 16 }}>
               lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec
               odio. Quisque volutpat mattis eros. Nullam malesuada erat ut
               turpis. Suspendisse urna nibh.
@@ -71,77 +66,18 @@ const Profile = ({ navigation, upvotes, downvotes, answers }) => {
           />
         </View>
 
-        <View style={{ marginTop: 50, margin: 15 }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Avatar
-              icon={{ name: "home" }}
-              rounded
-              size="large"
-              source={{
-                uri:
-                  "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
-              }}
-            >
-              <Accessory iconStyle={{ size: "" }} />
-            </Avatar>
-            <View style={{ justifyContent: "center", flex: 1 }}>
-              <Text style={{ marginLeft: 20, fontSize: 18, fontWeight: "500" }}>
-                Hiwot
-              </Text>
-              <Text style={{ marginLeft: 20, fontSize: 16, fontWeight: "500" }}>
-                About Hiwot
-              </Text>
-            </View>
-            <View>
-              <Text>MM/DD/YYYY</Text>
-            </View>
-          </View>
-          <View style={{ marginTop: 20 }}>
-            <Text style={{ fontSize: 20 }}>Question title...</Text>
-          </View>
-          <View style={{ marginTop: 20 }}>
-            <Text style={{ fontSize: 20 }}>
-              lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec
-              odio. Quisque volutpat mattis eros. Nullam malesuada erat ut
-              turpis. Suspendisse urna nibh.
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              padding: 5,
-              alignItems: "center",
-            }}
-          >
-            <View style={{ paddingLeft: 5, flexDirection: "row" }}>
-              <Icon name="thumbs-up" type="font-awesome" />
-              <Text style={{ paddingTop: 5, paddingLeft: 5, fontSize: 16 }}>
-                {upvotes} upvotes
-              </Text>
-            </View>
-            <View style={{ paddingLeft: 40, flexDirection: "row" }}>
-              <Icon name="thumbs-down" type="font-awesome" />
-              <Text style={{ paddingTop: 5, paddingLeft: 5, fontSize: 16 }}>
-                {downvotes} downvotes
-              </Text>
-            </View>
-            <View
-              style={{
-                paddingLeft: 15,
-                flex: 1,
-                paddingTop: 5,
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: "center",
-                  fontSize: 16,
-                }}
-              >
-                {answers} Answers
-              </Text>
-            </View>
-          </View>
+        <View style={{ padding: 5 }}>
+          <QuestionCard
+            name="Henok Tasissa"
+            profileImage="https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg"
+            title="Sample question"
+            question="What is blah blah?"
+            upvotes={14}
+            downvotes={12}
+            answers={44}
+            date={"12/12/1111"}
+            navigation={navigation}
+          />
         </View>
       </ScrollView>
     </View>
