@@ -13,12 +13,53 @@ import { Header, Avatar, Input, Button } from "react-native-elements";
 import { Picker } from "@react-native-community/picker";
 import DropDownPicker from "react-native-dropdown-picker";
 
+import { db } from "../firebaseConfig";
+
 class Ask extends Component {
   state = {
-    category: "TECHNOLOGY",
+    categories: [],
+    question: {
+      title: "",
+      description: "",
+      category: "",
+    },
   };
   richText = React.createRef();
 
+  handleAsk = (title, description, category) => {
+    if (title != "" && description != "" && category != "") {
+      const ref = db.collection("Questions").doc();
+      ref.set({
+        id: ref.id,
+        title,
+        description,
+        category,
+      });
+    }
+  };
+
+  getCategories = () => {
+    let categoryList = [];
+    db.collection("Categories")
+      .where("lang", "==", "Amharic")
+      .get()
+      .then((categories) => {
+        categories.forEach((category) => {
+          let data = category.data();
+          let ctgry = {};
+          ctgry["label"] = data.name;
+          ctgry["value"] = data.name.toLowerCase();
+          categoryList.push(ctgry);
+        });
+        this.setState({
+          categories: categoryList,
+        });
+      });
+  };
+
+  componentDidMount = () => {
+    this.getCategories();
+  };
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -83,6 +124,14 @@ class Ask extends Component {
                     style={styles.titleinput}
                     placeholder="Add question title."
                     multiline={true}
+                    onChangeText={(text) =>
+                      this.setState({
+                        question: {
+                          ...this.state.question,
+                          title: text,
+                        },
+                      })
+                    }
                   />
                 </View>
                 <View style={{ margin: 5, marginTop: 5 }}>
@@ -90,6 +139,14 @@ class Ask extends Component {
                     style={styles.detailinput}
                     placeholder="Add more details for your question."
                     multiline={true}
+                    onChangeText={(text) =>
+                      this.setState({
+                        question: {
+                          ...this.state.question,
+                          description: text,
+                        },
+                      })
+                    }
                   />
                 </View>
 
@@ -97,19 +154,7 @@ class Ask extends Component {
                   <View style={styles.dropdown}>
                     <DropDownPicker
                       style={{}}
-                      items={[
-                        {
-                          label: "TECHNOLOGY",
-                          value: "technology",
-                        },
-                        { label: "ENGLISH", value: "english" },
-                        { label: "SCIENCE", value: "science" },
-                        { label: "MATH", value: "math" },
-                        {
-                          label: "ARTIFICIAL INTELLIGENCE",
-                          value: "artificial intelligence",
-                        },
-                      ]}
+                      items={this.state.categories}
                       //defaultValue={this.state.any}
                       style={{ backgroundColor: "#fafafa" }}
                       itemStyle={{
@@ -118,7 +163,10 @@ class Ask extends Component {
                       dropDownStyle={{ backgroundColor: "#fafafa" }}
                       onChangeItem={(item) =>
                         this.setState({
-                          category: item.value,
+                          question: {
+                            ...this.state.question,
+                            category: item.value,
+                          },
                         })
                       }
                     />
@@ -126,6 +174,13 @@ class Ask extends Component {
                   <Button
                     style={{ marginTop: 20, marginHorizontal: 10 }}
                     title="Ask"
+                    onPress={() =>
+                      this.handleAsk(
+                        this.state.question.title,
+                        this.state.question.description,
+                        this.state.question.category
+                      )
+                    }
                   />
                 </View>
               </View>
