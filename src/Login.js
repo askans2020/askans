@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -13,6 +13,15 @@ import { Input, Button } from "react-native-elements";
 import firebase from "../firebaseConfig";
 
 class Login extends Component {
+  state = {
+    email: "",
+    password: "",
+    error: {
+      status: false,
+      message: "",
+    },
+  };
+
   componentDidMount = () => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -22,6 +31,22 @@ class Login extends Component {
       }
     });
   };
+
+  signInUser = (email, password) => {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .catch((err) =>
+        this.setState({
+          ...this.state,
+          error: {
+            status: true,
+            message: "Check your password or email",
+          },
+        })
+      );
+  };
+
   render() {
     return (
       <KeyboardAvoidingView
@@ -30,19 +55,36 @@ class Login extends Component {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.loginFormContainer}>
+            {this.state.error.status ? (
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "red",
+                  fontWeight: "bold",
+                }}
+              >
+                {this.state.error.message}
+              </Text>
+            ) : null}
             <Input
               placeholder="Email Address"
               leftIcon={<Icon name="envelope" size={24} color="black" />}
+              onChangeText={(text) => this.setState({ email: text })}
+              value={this.state.email}
             />
             <Input
               placeholder="Password"
               leftIcon={<Icon name="key" size={24} color="black" />}
               secureTextEntry={true}
+              onChangeText={(text) => this.setState({ password: text })}
+              value={this.state.password}
             />
             <Button
               title="Sign In"
               style={styles.loginButton}
-              onPress={() => this.props.navigation.navigate("Home")}
+              onPress={() =>
+                this.signInUser(this.state.email, this.state.password)
+              }
             />
             <Text style={styles.question}>You don't have an account?</Text>
             <Button
