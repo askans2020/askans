@@ -9,6 +9,7 @@ import {
   ButtonGroup,
 } from "react-native-elements";
 import QuestionCard from "./components/QuestionCard";
+import firebase from "../firebaseConfig";
 
 const Profile = ({ navigation }) => {
   return (
@@ -18,7 +19,13 @@ const Profile = ({ navigation }) => {
       }}
     >
       <Header
-        leftComponent={<Icon name="power-off" type="font-awesome" />}
+        leftComponent={
+          <Icon
+            name="power-off"
+            type="font-awesome"
+            onPress={() => firebase.auth().signOut()}
+          />
+        }
         centerComponent={{
           text: "AskAns",
           style: { color: "#000000", fontWeight: "800", fontSize: 25 },
