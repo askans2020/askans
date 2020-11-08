@@ -11,11 +11,17 @@ import {
 import { Button, Input } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import firebase, { db } from "../firebaseConfig";
+import DropDownPicker from "react-native-dropdown-picker";
+
 const Register = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [language, setLanguage] = useState({
+    label: "ENGLISH",
+    value: "English",
+  });
 
   const [error, setError] = useState({
     status: false,
@@ -66,7 +72,7 @@ const Register = ({ navigation }) => {
             bio: "",
             questionsCount: 0,
             answersCount: 0,
-            language: "",
+            language: language,
           };
           db.collection("Users").doc(user.uid).set(userData);
           setFirstName("");
@@ -122,6 +128,36 @@ const Register = ({ navigation }) => {
             secureTextEntry={true}
             value={password}
           />
+          <View style={{ marginBottom: 10, zIndex: 100 }}>
+            <DropDownPicker
+              items={[
+                {
+                  label: "ENGLISH",
+                  value: "English",
+                },
+                {
+                  label: "AMHARIC",
+                  value: "Amharic",
+                },
+                {
+                  label: "SPANISH",
+                  value: "Spanish",
+                },
+              ]}
+              defaultValue={language.value}
+              containerStyle={{ height: 40 }}
+              style={{
+                backgroundColor: "#fafafa",
+                marginHorizontal: 10,
+                fontSize: 13,
+              }}
+              itemStyle={{
+                justifyContent: "flex-start",
+              }}
+              dropDownStyle={{ backgroundColor: "#fafafa" }}
+              onChangeItem={(item) => setLanguage(item)}
+            />
+          </View>
           <Button
             title="Sign Up"
             style={styles.signUpButton}
