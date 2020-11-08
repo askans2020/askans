@@ -72,7 +72,7 @@ const Register = ({ navigation }) => {
             bio: "",
             questionsCount: 0,
             answersCount: 0,
-            language: language,
+            language: language.value,
           };
           db.collection("Users").doc(user.uid).set(userData);
           setFirstName("");

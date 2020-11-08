@@ -4,7 +4,7 @@ import { Header, Avatar, Icon, Button } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 import HorizontalTopics from "./components/HorizontalTopics";
 import QuestionCard from "./components/QuestionCard";
-
+import firebase, { db } from "../firebaseConfig";
 class Feed extends Component {
   state = {
     questions: [
@@ -92,6 +92,37 @@ class Feed extends Component {
     });
   };
 
+  getCategories = async () => {
+    let uid = firebase.auth().currentUser.uid;
+    let language = "";
+    await db
+      .collection("Users")
+      .doc(uid)
+      .get()
+      .then((user) => (language = user.data().language));
+
+    let categories = [];
+    await db
+      .collection("Categories")
+      .where("lang", "==", language)
+      .get()
+      .then((data) => {
+        data.forEach((category) => {
+          category = category.data();
+          let ctgry = {
+            id: category.id,
+            name: category.name,
+          };
+          categories.push(ctgry);
+        });
+      });
+    this.setState({
+      topics: categories,
+    });
+  };
+  componentDidMount = () => {
+    this.getCategories();
+  };
   render() {
     return (
       <View style={{ flex: 1 }}>
