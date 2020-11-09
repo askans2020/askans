@@ -5,6 +5,9 @@ import { ScrollView } from "react-native-gesture-handler";
 import HorizontalTopics from "./components/HorizontalTopics";
 import QuestionCard from "./components/QuestionCard";
 import firebase, { db } from "../firebaseConfig";
+import { setUser } from "./redux/userReducer";
+import { connect } from "react-redux";
+
 class Feed extends Component {
   state = {
     questions: [
@@ -120,7 +123,14 @@ class Feed extends Component {
       topics: categories,
     });
   };
+
+  getUser = () => (dispatch) => {
+    let uid = firebase.auth().currentUser.uid;
+    dispatch(setUser(uid));
+  };
   componentDidMount = () => {
+    this.getUser();
+    console.log(this.props.user.firstName);
     this.getCategories();
   };
   render() {
@@ -137,6 +147,7 @@ class Feed extends Component {
           }}
           containerStyle={{ backgroundColor: "#D3D3D3" }}
         />
+
         <ScrollView
           style={{ flex: 1, padding: 5, paddingTop: 10, paddingBottom: 60 }}
         >
@@ -168,4 +179,12 @@ class Feed extends Component {
   }
 }
 
-export default Feed;
+const mapState = (state) => {
+  return {
+    user: state.user,
+  };
+};
+const actionCreators = {
+  setUser,
+};
+export default connect(mapState, actionCreators)(Feed);

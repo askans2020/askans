@@ -11,7 +11,6 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Input, Button } from "react-native-elements";
 import firebase from "../firebaseConfig";
-
 class Login extends Component {
   state = {
     email: "",
@@ -128,4 +127,5 @@ const styles = StyleSheet.create({
     margin: 10,
   },
 });
+
 export default Login;
