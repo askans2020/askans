@@ -6,7 +6,8 @@ import HorizontalTopics from "./components/HorizontalTopics";
 import QuestionCard from "./components/QuestionCard";
 import firebase, { db } from "../firebaseConfig";
 import { setUser } from "./redux/userReducer";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
+import store from "./redux/store";
 
 class Feed extends Component {
   state = {
@@ -124,13 +125,12 @@ class Feed extends Component {
     });
   };
 
-  getUser = () => (dispatch) => {
+  getUser = async () => {
     let uid = firebase.auth().currentUser.uid;
-    dispatch(setUser(uid));
+    await this.props.setUser(uid);
   };
   componentDidMount = () => {
     this.getUser();
-    console.log(this.props.user.firstName);
     this.getCategories();
   };
   render() {
@@ -187,4 +187,5 @@ const mapState = (state) => {
 const actionCreators = {
   setUser,
 };
+
 export default connect(mapState, actionCreators)(Feed);

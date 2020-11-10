@@ -1,9 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { db } from "../../firebaseConfig";
 
-const setUser = createAsyncThunk("user/setUser", async (userId) => {
-  let userData = {};
-  console.log(1234);
+export const setUser = createAsyncThunk("user/setUser", async (userId) => {
+  let userData = { firstName: "ssxsx" };
   await db
     .collection("Users")
     .doc(userId)
@@ -14,24 +13,22 @@ const setUser = createAsyncThunk("user/setUser", async (userId) => {
 
   return userData;
 });
-const initialState = {
-  firstName: "Henok",
-};
+
+const initialState = {};
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
     changeFirstName: (state) => ({ ...state, firstName: "Heni" }),
-    changeLastName: (state) => ({ ...state, lastName: "Best" }),
+    changeLastName: (state) => ({ ...state, lastName: "Tas" }),
   },
   extraReducers: {
     [setUser.fulfilled]: (state, action) => {
-      console.log("Called");
-      state.firstName = "Henokaa";
+      state = action.payload;
+      return state;
     },
   },
 });
 
 export const { changeFirstName, changeLastName } = userSlice.actions;
-export { setUser };
 export default userSlice.reducer;
