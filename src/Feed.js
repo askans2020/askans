@@ -6,7 +6,8 @@ import HorizontalTopics from "./components/HorizontalTopics";
 import QuestionCard from "./components/QuestionCard";
 import firebase, { db } from "../firebaseConfig";
 import { setUser } from "./redux/userReducer";
-import { connect, useDispatch } from "react-redux";
+import { getCategories } from "./redux/categoriesReducer";
+import { connect } from "react-redux";
 import store from "./redux/store";
 
 class Feed extends Component {
@@ -97,32 +98,10 @@ class Feed extends Component {
   };
 
   getCategories = async () => {
-    let uid = firebase.auth().currentUser.uid;
-    let language = "";
-    await db
-      .collection("Users")
-      .doc(uid)
-      .get()
-      .then((user) => (language = user.data().language));
-
-    let categories = [];
-    await db
-      .collection("Categories")
-      .where("lang", "==", language)
-      .get()
-      .then((data) => {
-        data.forEach((category) => {
-          category = category.data();
-          let ctgry = {
-            id: category.id,
-            name: category.name,
-          };
-          categories.push(ctgry);
-        });
-      });
-    this.setState({
-      topics: categories,
-    });
+    if (this.props.user) {
+      await this.props.getCategories(this.props.user.language);
+      console.log(this.props.categories);
+    }
   };
 
   getUser = async () => {
@@ -151,7 +130,9 @@ class Feed extends Component {
         <ScrollView
           style={{ flex: 1, padding: 5, paddingTop: 10, paddingBottom: 60 }}
         >
-          <HorizontalTopics topics={this.state.topics} />
+          {this.props.categories ? (
+            <HorizontalTopics topics={this.props.categories.categories} />
+          ) : null}
 
           {this.state.questions.map((question, key) => {
             return (
@@ -182,10 +163,12 @@ class Feed extends Component {
 const mapState = (state) => {
   return {
     user: state.user,
+    categories: state.categories,
   };
 };
 const actionCreators = {
   setUser,
+  getCategories,
 };
 
 export default connect(mapState, actionCreators)(Feed);

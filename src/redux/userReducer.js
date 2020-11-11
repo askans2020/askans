@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { db } from "../../firebaseConfig";
 
 export const setUser = createAsyncThunk("user/setUser", async (userId) => {
-  let userData = { firstName: "ssxsx" };
+  let userData = {};
   await db
     .collection("Users")
     .doc(userId)
