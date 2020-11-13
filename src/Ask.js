@@ -12,8 +12,9 @@ import {
 import { Header, Avatar, Input, Button } from "react-native-elements";
 import { Picker } from "@react-native-community/picker";
 import DropDownPicker from "react-native-dropdown-picker";
-
 import { db } from "../firebaseConfig";
+import { connect } from "react-redux";
+import { askQuestion } from "./redux/questionsReducer";
 
 class Ask extends Component {
   state = {
@@ -24,37 +25,36 @@ class Ask extends Component {
       category: "",
     },
   };
-  richText = React.createRef();
 
   handleAsk = (title, description, category) => {
     if (title != "" && description != "" && category != "") {
-      const ref = db.collection("Questions").doc();
-      ref.set({
-        id: ref.id,
+      const userId = this.props.user.uid;
+      const language = this.props.user.language;
+      const questionInfo = {
+        userId,
         title,
         description,
         category,
-      });
+        language,
+      };
+      this.props.askQuestion(questionInfo);
     }
   };
 
   getCategories = () => {
+    const categories = this.props.categories;
     let categoryList = [];
-    db.collection("Categories")
-      .where("lang", "==", "Amharic")
-      .get()
-      .then((categories) => {
-        categories.forEach((category) => {
-          let data = category.data();
-          let ctgry = {};
-          ctgry["label"] = data.name;
-          ctgry["value"] = data.name.toLowerCase();
-          categoryList.push(ctgry);
-        });
-        this.setState({
-          categories: categoryList,
-        });
-      });
+
+    categories.categories.map((category) => {
+      let ctgry = {};
+      ctgry["label"] = category.name;
+      ctgry["value"] = category.name;
+      categoryList.push(ctgry);
+    });
+    this.setState({
+      ...this.state,
+      categories: categoryList,
+    });
   };
 
   componentDidMount = () => {
@@ -126,6 +126,7 @@ class Ask extends Component {
                     multiline={true}
                     onChangeText={(text) =>
                       this.setState({
+                        ...this.state,
                         question: {
                           ...this.state.question,
                           title: text,
@@ -141,6 +142,7 @@ class Ask extends Component {
                     multiline={true}
                     onChangeText={(text) =>
                       this.setState({
+                        ...this.state,
                         question: {
                           ...this.state.question,
                           description: text,
@@ -163,6 +165,7 @@ class Ask extends Component {
                       dropDownStyle={{ backgroundColor: "#fafafa" }}
                       onChangeItem={(item) =>
                         this.setState({
+                          ...this.state,
                           question: {
                             ...this.state.question,
                             category: item.value,
@@ -174,13 +177,13 @@ class Ask extends Component {
                   <Button
                     style={{ marginTop: 20, marginHorizontal: 10 }}
                     title="Ask"
-                    onPress={() =>
+                    onPress={() => {
                       this.handleAsk(
                         this.state.question.title,
                         this.state.question.description,
                         this.state.question.category
-                      )
-                    }
+                      );
+                    }}
                   />
                 </View>
               </View>
@@ -229,4 +232,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
 });
-export default Ask;
+
+const mapState = (state) => {
+  return {
+    categories: state.categories,
+    questions: state.questions,
+    user: state.user,
+  };
+};
+const actionCreators = {
+  askQuestion,
+};
+export default connect(mapState, actionCreators)(Ask);

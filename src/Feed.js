@@ -100,7 +100,6 @@ class Feed extends Component {
   getCategories = async () => {
     if (this.props.user) {
       await this.props.getCategories(this.props.user.language);
-      console.log(this.props.categories);
     }
   };
 
@@ -108,9 +107,9 @@ class Feed extends Component {
     let uid = firebase.auth().currentUser.uid;
     await this.props.setUser(uid);
   };
-  componentDidMount = () => {
-    this.getUser();
-    this.getCategories();
+  componentDidMount = async () => {
+    await this.getUser();
+    await this.getCategories();
   };
   render() {
     return (
