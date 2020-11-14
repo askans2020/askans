@@ -21,23 +21,33 @@ class Ask extends Component {
     categories: [],
     question: {
       title: "",
-      description: "",
+      text: "",
       category: "",
     },
+    selectedCategory: null,
   };
 
-  handleAsk = (title, description, category) => {
-    if (title != "" && description != "" && category != "") {
+  handleAsk = async (title, text, category) => {
+    if (title != "" && text != "" && category != "") {
       const userId = this.props.user.uid;
       const language = this.props.user.language;
       const questionInfo = {
         userId,
         title,
-        description,
+        text,
         category,
         language,
       };
-      this.props.askQuestion(questionInfo);
+      await this.props.askQuestion(questionInfo);
+      this.setState({
+        ...this.state,
+        question: {
+          title: "",
+          text: "",
+          category: "",
+        },
+        selectedCategory: null,
+      });
     }
   };
 
@@ -133,6 +143,7 @@ class Ask extends Component {
                         },
                       })
                     }
+                    value={this.state.question.title}
                   />
                 </View>
                 <View style={{ margin: 5, marginTop: 5 }}>
@@ -145,10 +156,11 @@ class Ask extends Component {
                         ...this.state,
                         question: {
                           ...this.state.question,
-                          description: text,
+                          text: text,
                         },
                       })
                     }
+                    value={this.state.question.text}
                   />
                 </View>
 
@@ -170,8 +182,11 @@ class Ask extends Component {
                             ...this.state.question,
                             category: item.value,
                           },
+                          selectedCategory: item.value,
                         })
                       }
+                      defaultValue={this.state.selectedCategory}
+                      placeholder="Select Category"
                     />
                   </View>
                   <Button
@@ -180,7 +195,7 @@ class Ask extends Component {
                     onPress={() => {
                       this.handleAsk(
                         this.state.question.title,
-                        this.state.question.description,
+                        this.state.question.text,
                         this.state.question.category
                       );
                     }}

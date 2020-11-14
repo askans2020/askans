@@ -7,8 +7,8 @@ import QuestionCard from "./components/QuestionCard";
 import firebase, { db } from "../firebaseConfig";
 import { setUser } from "./redux/userReducer";
 import { getCategories } from "./redux/categoriesReducer";
+import { getQuestionsByLanguage } from "./redux/questionsReducer";
 import { connect } from "react-redux";
-import store from "./redux/store";
 
 class Feed extends Component {
   state = {
@@ -20,7 +20,7 @@ class Feed extends Component {
         profileImage:
           "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
         title: "Post according to an editorial calendar?",
-        question:
+        text:
           "Instagram was designed as an app to create content via a mobile device. As a result, it is only practical to use one of the various scheduling tools available, so that you can post systematically. By the help of using an editorial calendar, you are able to schedule regular posts in advance, to keep your followers engaged.",
         upvotes: 123,
         downvotes: 10,
@@ -34,7 +34,7 @@ class Feed extends Component {
         profileImage:
           "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
         title: "Post according to an editorial calendar?",
-        question:
+        text:
           "Instagram was designed as an app to create content via a mobile device. As a result, it is only practical to use one of the various scheduling tools available, so that you can post systematically. By the help of using an editorial calendar, you are able to schedule regular posts in advance, to keep your followers engaged.",
         upvotes: 432,
         downvotes: 12,
@@ -48,7 +48,7 @@ class Feed extends Component {
         profileImage:
           "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
         title: "Post according to an editorial?",
-        question:
+        text:
           "Instagram was designed as an app to create content via a mobile device. As a result, it is only practical to use one of the various scheduling tools available, so that you can post systematically. By the help of using an editorial calendar, you are able to schedule regular posts in advance, to keep your followers engaged.",
         upvotes: 432,
         downvotes: 12,
@@ -56,16 +56,17 @@ class Feed extends Component {
         upvoted: false,
       },
     ],
-    topics: [
-      "Technology",
-      "Science",
-      "Math",
-      "Artificial Intelligence",
-      "Programming",
-      "Jocks",
-    ],
+    topics: [],
   };
 
+  fetchQuestionsByLanguage = async () => {
+    const language = this.props.user.language;
+    await this.props.getQuestionsByLanguage(language);
+    this.setState({
+      ...this.state,
+      questions: this.props.questions,
+    });
+  };
   handleUpvote = (questionId) => {
     let questions = this.state.questions;
 
@@ -110,6 +111,7 @@ class Feed extends Component {
   componentDidMount = async () => {
     await this.getUser();
     await this.getCategories();
+    await this.fetchQuestionsByLanguage();
   };
   render() {
     return (
@@ -139,7 +141,7 @@ class Feed extends Component {
                 name={question.name}
                 profileImage={question.profileImage}
                 title={question.title}
-                question={question.question}
+                text={question.text}
                 upvotes={question.upvotes}
                 downvotes={question.downvotes}
                 answers={question.answers}
@@ -163,11 +165,13 @@ const mapState = (state) => {
   return {
     user: state.user,
     categories: state.categories,
+    questions: state.questions.questions,
   };
 };
 const actionCreators = {
   setUser,
   getCategories,
+  getQuestionsByLanguage,
 };
 
 export default connect(mapState, actionCreators)(Feed);

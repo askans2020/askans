@@ -9,7 +9,7 @@ const QuestionCard = (props) => {
     date,
     profileImage,
     title,
-    question,
+    text,
     upvotes,
     downvotes,
     answers,
@@ -61,7 +61,7 @@ const QuestionCard = (props) => {
         <Text style={{ fontWeight: "600", marginBottom: 8, fontSize: 18 }}>
           {title}
         </Text>
-        <Text>{question}</Text>
+        <Text>{text}</Text>
       </TouchableOpacity>
       <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }}>
         <View style={{ paddingLeft: 5, flexDirection: "row" }}>

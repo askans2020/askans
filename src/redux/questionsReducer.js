@@ -5,18 +5,18 @@ const askQuestion = createAsyncThunk(
   "questions/askQuestion",
   async (questionInfo) => {
     const ref = db.collection("Questions").doc();
-    const { userId, title, description, category, language } = questionInfo;
+    const { userId, title, text, category, language } = questionInfo;
 
     let questionData = {
       id: ref.id,
       askedBy: userId,
       title: title,
-      description: description,
+      text: text,
       category: category,
       language: language,
-      answersCount: 0,
-      upvoteCount: 0,
-      downvoteCount: 0,
+      answers: 0,
+      upvotes: 0,
+      downvotes: 0,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       hasImage: false,
       imageLink: "",
@@ -26,26 +26,33 @@ const askQuestion = createAsyncThunk(
     questionData.timestamp = new Date(
       firebase.firestore.Timestamp.now().seconds * 1000
     ).toLocaleDateString();
-    çconsole.log(questionData);
-    // return questionData;
+    return questionData;
   }
 );
 
 const getQuestionsByLanguage = createAsyncThunk(
   "questions/getQuestionsByLanguage",
   async (language) => {
-    const questions = [];
-    await db
+    const questions = await db
       .collection("Questions")
       .where("language", "==", language)
-      .get()
-      .then((data) => {
-        data.forEach((question) => {
-          question = question.data();
-          questions.push(question);
-        });
-      });
-    return questions;
+      .get();
+    let asked_questions = [];
+    questions.forEach((question) => {
+      question = question.data();
+      question.timestamp = new Date(
+        question.timestamp.toDate()
+      ).toLocaleDateString();
+      asked_questions.push(question);
+    });
+
+    for (let question of asked_questions) {
+      let user = await db.collection("Users").doc(question.askedBy).get();
+      user = user.data();
+      question.name = user.firstName + " " + user.lastName;
+      question.profileImage = user.photoURL;
+    }
+    return asked_questions;
   }
 );
 const initialState = {
