@@ -18,8 +18,16 @@ const askQuestion = createAsyncThunk(
       upvoteCount: 0,
       downvoteCount: 0,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      hasImage: false,
+      imageLink: "",
     };
+    console.log(questionData);
     await ref.set(questionData);
+    questionData.timestamp = new Date(
+      firebase.firestore.Timestamp.now().seconds * 1000
+    ).toLocaleDateString();
+    çconsole.log(questionData);
+    // return questionData;
   }
 );
 
