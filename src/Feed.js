@@ -7,7 +7,11 @@ import QuestionCard from "./components/QuestionCard";
 import firebase, { db } from "../firebaseConfig";
 import { setUser } from "./redux/userReducer";
 import { getCategories } from "./redux/categoriesReducer";
-import { getQuestionsByLanguage } from "./redux/questionsReducer";
+import {
+  getQuestionsByLanguage,
+  upvoteQuestion,
+  downvoteQuestion,
+} from "./redux/questionsReducer";
 import { connect } from "react-redux";
 
 class Feed extends Component {
@@ -67,35 +71,18 @@ class Feed extends Component {
       questions: this.props.questions,
     });
   };
-  handleUpvote = (questionId) => {
-    let questions = this.state.questions;
-
-    let newVals = questions.map((q) => {
-      if (q.id == questionId) {
-        q.upvotes += q.upvoted ? -1 : 1;
-        q.upvoted = !q.upvoted;
-      }
-      return q;
-    });
-
-    this.setState({
-      questions: newVals,
-    });
+  handleUpvote = async (questionId) => {
+    const questionInfo = { userId: this.props.user.uid, questionId };
+    await this.props.upvoteQuestion(questionInfo);
   };
 
-  handleDownvote = (questionId) => {
-    let questions = this.state.questions;
+  handleDownvote = async (questionId) => {
+    const questionInfo = {
+      userId: this.props.user.uid,
+      questionId,
+    };
 
-    let newVals = questions.map((q) => {
-      if (q.id == questionId) {
-        q.downvotes++;
-      }
-      return q;
-    });
-
-    this.setState({
-      questions: newVals,
-    });
+    this.props.downvoteQuestion(questionInfo);
   };
 
   getCategories = async () => {
@@ -108,11 +95,13 @@ class Feed extends Component {
     let uid = firebase.auth().currentUser.uid;
     await this.props.setUser(uid);
   };
+
   componentDidMount = async () => {
     await this.getUser();
     await this.getCategories();
     await this.fetchQuestionsByLanguage();
   };
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -135,7 +124,7 @@ class Feed extends Component {
             <HorizontalTopics topics={this.props.categories.categories} />
           ) : null}
 
-          {this.state.questions.map((question, key) => {
+          {this.props.questions.map((question, key) => {
             return (
               <QuestionCard
                 name={question.name}
@@ -150,7 +139,16 @@ class Feed extends Component {
                 navigation={this.props.navigation}
                 upvote={(questionId) => this.handleUpvote(questionId)}
                 downvote={(questionId) => this.handleDownvote(questionId)}
-                upvoted={question.upvoted}
+                upvoted={
+                  question.upvotedBy.includes(this.props.user.uid)
+                    ? true
+                    : false
+                }
+                downvoted={
+                  question.downvotedBy.includes(this.props.user.uid)
+                    ? true
+                    : false
+                }
                 id={question.id}
               />
             );
@@ -172,6 +170,8 @@ const actionCreators = {
   setUser,
   getCategories,
   getQuestionsByLanguage,
+  upvoteQuestion,
+  downvoteQuestion,
 };
 
 export default connect(mapState, actionCreators)(Feed);

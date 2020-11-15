@@ -17,6 +17,7 @@ const QuestionCard = (props) => {
     upvote,
     downvote,
     upvoted,
+    downvoted,
   } = props;
 
   return (
@@ -80,6 +81,7 @@ const QuestionCard = (props) => {
             name="thumbs-down"
             type="font-awesome"
             onPress={() => downvote(id)}
+            iconStyle={downvoted ? { color: "blue" } : { color: "black" }}
           />
           <Text style={{ paddingTop: 5, paddingLeft: 5 }}>
             {downvotes} downvotes

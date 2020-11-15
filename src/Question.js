@@ -19,7 +19,7 @@ class Question extends Component {
       profileImage:
         "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
       title: "Post according to an editorial calendar?",
-      question:
+      text:
         "Instagram was designed as an app to create content via a mobile device. As a result, it is only practical to use one of the various scheduling tools available, so that you can post systematically. By the help of using an editorial calendar, you are able to schedule regular posts in advance, to keep your followers engaged.",
       upvotes: 123,
       downvotes: 10,
@@ -68,7 +68,7 @@ class Question extends Component {
             name={this.state.question.name}
             profileImage={this.state.question.profileImage}
             title={this.state.question.title}
-            question={this.state.question.question}
+            text={this.state.question.text}
             upvotes={this.state.question.upvotes}
             downvotes={this.state.question.downvotes}
             answers={this.state.question.answers}

@@ -15,6 +15,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { db } from "../firebaseConfig";
 import { connect } from "react-redux";
 import { askQuestion } from "./redux/questionsReducer";
+import { getCategories } from "./redux/categoriesReducer";
 
 class Ask extends Component {
   state = {
@@ -51,7 +52,11 @@ class Ask extends Component {
     }
   };
 
-  getCategories = () => {
+  getCategories = async () => {
+    if (this.props.user) {
+      await this.props.getCategories(this.props.user.language);
+    }
+
     const categories = this.props.categories;
     let categoryList = [];
 
@@ -257,5 +262,6 @@ const mapState = (state) => {
 };
 const actionCreators = {
   askQuestion,
+  getCategories,
 };
 export default connect(mapState, actionCreators)(Ask);

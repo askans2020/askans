@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { firestore } from "firebase";
 import firebase, { db } from "../../firebaseConfig";
 
 const askQuestion = createAsyncThunk(
@@ -20,12 +21,18 @@ const askQuestion = createAsyncThunk(
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       hasImage: false,
       imageLink: "",
+      upvotedBy: [],
+      downvotedBy: [],
     };
-    console.log(questionData);
     await ref.set(questionData);
     questionData.timestamp = new Date(
       firebase.firestore.Timestamp.now().seconds * 1000
     ).toLocaleDateString();
+    let user = await db.collection("Users").doc(userId).get();
+    user = user.data();
+    questionData.name = user.firstName + " " + user.lastName;
+    questionData.profileImage = user.photoURL;
+    questionData.date = questionData.timestamp;
     return questionData;
   }
 );
@@ -43,6 +50,7 @@ const getQuestionsByLanguage = createAsyncThunk(
       question.timestamp = new Date(
         question.timestamp.toDate()
       ).toLocaleDateString();
+      question.date = question.timestamp;
       asked_questions.push(question);
     });
 
@@ -55,8 +63,85 @@ const getQuestionsByLanguage = createAsyncThunk(
     return asked_questions;
   }
 );
+
+const upvoteQuestion = createAsyncThunk(
+  "questions/upvoteQuestion",
+  async (questionInfo) => {
+    const { userId, questionId } = questionInfo;
+    let question = await db.collection("Questions").doc(questionId).get();
+
+    if (question.data().upvotedBy.includes(userId)) {
+      const ref = db.collection("Questions").doc(questionId);
+      await ref.update({
+        upvotedBy: firestore.FieldValue.arrayRemove(userId),
+        upvotes: firestore.FieldValue.increment(-1),
+      });
+    } else if (question.data().downvotedBy.includes(userId)) {
+      const ref = db.collection("Questions").doc(questionId);
+      await ref.update({
+        upvotedBy: firestore.FieldValue.arrayUnion(userId),
+        downvotedBy: firestore.FieldValue.arrayRemove(userId),
+        upvotes: firestore.FieldValue.increment(1),
+        downvotes: firestore.FieldValue.increment(-1),
+      });
+    } else {
+      const ref = db.collection("Questions").doc(questionId);
+      await ref.update({
+        upvotedBy: firestore.FieldValue.arrayUnion(userId),
+        upvotes: firestore.FieldValue.increment(1),
+      });
+    }
+
+    question = await db.collection("Questions").doc(questionId).get();
+    question = question.data();
+    question.timestamp = new Date(question.timestamp).toLocaleDateString();
+    question.date = question.timestamp;
+    return question;
+  }
+);
+
+const downvoteQuestion = createAsyncThunk(
+  "questions/downvoteQuesion",
+  async (questionInfo) => {
+    const { questionId, userId } = questionInfo;
+
+    let question = await db.collection("Questions").doc(questionId).get();
+    question = question.data();
+    if (
+      !question.upvotedBy.includes(userId) &&
+      !question.downvotedBy.includes(userId)
+    ) {
+      let ref = db.collection("Questions").doc(questionId);
+      await ref.update({
+        downvotes: firestore.FieldValue.increment(1),
+        downvotedBy: firestore.FieldValue.arrayUnion(userId),
+      });
+    } else if (question.upvotedBy.includes(userId)) {
+      let ref = db.collection("Questions").doc(questionId);
+      await ref.update({
+        upvotes: firestore.FieldValue.increment(-1),
+        upvotedBy: firestore.FieldValue.arrayRemove(userId),
+        downvotes: firestore.FieldValue.increment(1),
+        downvotedBy: firestore.FieldValue.arrayUnion(userId),
+      });
+    } else {
+      let ref = db.collection("Questions").doc(questionId);
+      await ref.update({
+        downvotes: firestore.FieldValue.increment(-1),
+        downvotedBy: firestore.FieldValue.arrayRemove(userId),
+      });
+    }
+
+    question = await db.collection("Questions").doc(questionId).get();
+    question = question.data();
+    question.timestamp = new Date(question.timestamp).toLocaleDateString();
+    question.date = question.timestamp;
+    return question;
+  }
+);
 const initialState = {
   questions: [],
+  question: {},
 };
 const questionsSlice = createSlice({
   name: "questions",
@@ -64,7 +149,7 @@ const questionsSlice = createSlice({
   reducers: {},
   extraReducers: {
     [askQuestion.fulfilled]: (state, action) => {
-      state.questions.push(action.payload);
+      state.questions = [action.payload, ...state.questions];
       console.log("Question Asked");
       //TODO: Push the new question asked
       return state;
@@ -74,8 +159,37 @@ const questionsSlice = createSlice({
       console.log("Question fetched");
       return state;
     },
+    [upvoteQuestion.fulfilled]: (state, action) => {
+      state.questions.map((question) => {
+        if (question.id == action.payload.id) {
+          question.upvotedBy = action.payload.upvotedBy;
+          question.downvotedBy = action.payload.downvotedBy;
+          question.upvotes = action.payload.upvotes;
+          question.downvotes = action.payload.downvotes;
+        }
+        return question;
+      });
+      return state;
+    },
+    [downvoteQuestion.fulfilled]: (state, action) => {
+      state.questions.map((question) => {
+        if (question.id == action.payload.id) {
+          question.upvotes = action.payload.upvotes;
+          question.upvotedBy = action.payload.upvotedBy;
+          question.downvotes = action.payload.downvotes;
+          question.downvotedBy = action.payload.downvotedBy;
+        }
+        return question;
+      });
+      return state;
+    },
   },
 });
 
-export { askQuestion, getQuestionsByLanguage };
+export {
+  askQuestion,
+  getQuestionsByLanguage,
+  upvoteQuestion,
+  downvoteQuestion,
+};
 export default questionsSlice.reducer;
