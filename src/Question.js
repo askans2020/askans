@@ -11,44 +11,50 @@ import { Header, Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import QuestionCard from "./components/QuestionCard";
 import AnswerCard from "./components/AnswerCard";
+import { connect } from "react-redux";
+import {
+  getQuestionById,
+  answerQuestion,
+  getQuestionAnswers,
+} from "./redux/questionReducer";
+
 class Question extends Component {
   state = {
-    question: {
-      name: "John Doe",
-      date: "MM/DD/YYYY",
-      profileImage:
-        "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
-      title: "Post according to an editorial calendar?",
-      text:
-        "Instagram was designed as an app to create content via a mobile device. As a result, it is only practical to use one of the various scheduling tools available, so that you can post systematically. By the help of using an editorial calendar, you are able to schedule regular posts in advance, to keep your followers engaged.",
-      upvotes: 123,
-      downvotes: 10,
-      answers: 24,
-    },
-    answers: [
-      {
-        name: "John Doe",
-        date: "MM/DD/YYYY",
-        profileImage:
-          "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
-        answer:
-          "Instagram was designed as an app to create content via a mobile device. As a result, it is only practical to use one of the various scheduling tools available, so that you can post systematically. By the help of using an editorial calendar, you are able to schedule regular posts in advance, to keep your followers engaged.",
-        upvotes: 123,
-        downvotes: 10,
-      },
-      {
-        name: "John Doe",
-        date: "MM/DD/YYYY",
-        profileImage:
-          "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
-        answer:
-          "Instagram was designed as an app to create content via a mobile device. As a result, it is only practical to use one of the various scheduling tools available, so that you can post systematically. By the help of using an editorial calendar, you are able to schedule regular posts in advance, to keep your followers engaged.",
-        upvotes: 123,
-        downvotes: 10,
-      },
-    ],
+    question: {},
+    answers: [],
+    answer: "",
   };
 
+  handleGetQuestionById = async (questionId) => {
+    await this.props.getQuestionById(questionId);
+    this.setState({
+      ...this.state,
+      question: this.props.question,
+    });
+  };
+
+  handleGetQuestionAnswers = async (questionId) => {
+    await this.props.getQuestionAnswers(questionId);
+    this.setState({
+      ...this.state,
+      answers: this.props.answers,
+    });
+  };
+  handleAnswer = async (userId, questionId, answer, language) => {
+    if (userId != "" && questionId != "" && answer != "" && language != "") {
+      const answerInfo = { userId, questionId, answer, language };
+      await this.props.answerQuestion(answerInfo);
+      this.setState({
+        ...this.state,
+        answer: "",
+      });
+    }
+  };
+  componentDidMount = async () => {
+    const { questionId } = this.props.route.params;
+    await this.handleGetQuestionById(questionId);
+    await this.handleGetQuestionAnswers(questionId);
+  };
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -75,18 +81,19 @@ class Question extends Component {
             date={this.state.question.date}
             navigation={this.props.navigation}
           />
+
           <View style={{ margin: 10 }}>
             <Text style={{ fontWeight: "bold", fontSize: 20 }}>Answers:</Text>
           </View>
           <View style={{ padding: 5 }}>
-            {this.state.answers.map((answer, key) => (
+            {this.props.answers.map((answer, key) => (
               <AnswerCard
                 name={answer.name}
                 profileImage={answer.profileImage}
                 answer={answer.answer}
-                upvotes={this.state.question.upvotes}
-                downvotes={this.state.question.downvotes}
-                date={this.state.question.date}
+                upvotes={answer.upvotes}
+                downvotes={answer.downvotes}
+                date={answer.date}
                 key={key}
               />
             ))}
@@ -108,7 +115,14 @@ class Question extends Component {
               width: "100%",
             }}
           >
-            <TextInput style={styles.textInput} placeholder="Answer..." />
+            <TextInput
+              style={styles.textInput}
+              placeholder="Answer..."
+              value={this.state.answer}
+              onChangeText={(text) =>
+                this.setState({ ...this.state, answer: text })
+              }
+            />
             <Button
               icon={<Icon name="arrow-circle-up" size={35} color="black" />}
               buttonStyle={{
@@ -118,6 +132,14 @@ class Question extends Component {
                 paddingRight: 5,
                 paddingLeft: 10,
               }}
+              onPress={() =>
+                this.handleAnswer(
+                  this.props.user.uid,
+                  this.state.question.id,
+                  this.state.answer,
+                  this.props.user.language
+                )
+              }
             />
           </View>
         </KeyboardAvoidingView>
@@ -144,4 +166,17 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
 });
-export default Question;
+
+const mapState = (state) => {
+  return {
+    user: state.user,
+    question: state.question.question,
+    answers: state.question.answers,
+  };
+};
+const actionCreators = {
+  getQuestionById,
+  answerQuestion,
+  getQuestionAnswers,
+};
+export default connect(mapState, actionCreators)(Question);

@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Avatar, Icon } from "react-native-elements";
-
 const QuestionCard = (props) => {
   const {
     id,
@@ -57,7 +56,7 @@ const QuestionCard = (props) => {
       </View>
       <TouchableOpacity
         style={{ margin: 5, padding: 5 }}
-        onPress={() => navigation.navigate("Question")}
+        onPress={() => navigation.navigate("Question", { questionId: id })}
       >
         <Text style={{ fontWeight: "600", marginBottom: 8, fontSize: 18 }}>
           {title}
