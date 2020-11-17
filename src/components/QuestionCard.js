@@ -1,18 +1,22 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Avatar, Icon } from "react-native-elements";
-
 const QuestionCard = (props) => {
   const {
+    id,
     name,
     date,
     profileImage,
     title,
-    question,
+    text,
     upvotes,
     downvotes,
     answers,
     navigation,
+    upvote,
+    downvote,
+    upvoted,
+    downvoted,
   } = props;
 
   return (
@@ -52,22 +56,32 @@ const QuestionCard = (props) => {
       </View>
       <TouchableOpacity
         style={{ margin: 5, padding: 5 }}
-        onPress={() => navigation.navigate("Question")}
+        onPress={() => navigation.navigate("Question", { questionId: id })}
       >
         <Text style={{ fontWeight: "600", marginBottom: 8, fontSize: 18 }}>
           {title}
         </Text>
-        <Text>{question}</Text>
+        <Text>{text}</Text>
       </TouchableOpacity>
       <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }}>
         <View style={{ paddingLeft: 5, flexDirection: "row" }}>
-          <Icon name="thumbs-up" type="font-awesome" />
+          <Icon
+            name="thumbs-up"
+            type="font-awesome"
+            onPress={() => upvote(id)}
+            iconStyle={upvoted ? { color: "blue" } : { color: "black" }}
+          />
           <Text style={{ paddingTop: 5, paddingLeft: 5 }}>
             {upvotes} upvotes
           </Text>
         </View>
         <View style={{ paddingLeft: 15, flexDirection: "row" }}>
-          <Icon name="thumbs-down" type="font-awesome" />
+          <Icon
+            name="thumbs-down"
+            type="font-awesome"
+            onPress={() => downvote(id)}
+            iconStyle={downvoted ? { color: "blue" } : { color: "black" }}
+          />
           <Text style={{ paddingTop: 5, paddingLeft: 5 }}>
             {downvotes} downvotes
           </Text>
