@@ -81,7 +81,6 @@ class Feed extends Component {
       userId: this.props.user.uid,
       questionId,
     };
-
     this.props.downvoteQuestion(questionInfo);
   };
 

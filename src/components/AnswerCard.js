@@ -3,7 +3,19 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Avatar, Icon } from "react-native-elements";
 
 const AnswerCard = (props) => {
-  const { name, date, profileImage, answer, upvotes, downvotes } = props;
+  const {
+    name,
+    date,
+    profileImage,
+    answer,
+    upvotes,
+    downvotes,
+    downvote,
+    upvoted,
+    downvoted,
+    upvote,
+    id,
+  } = props;
 
   return (
     <View style={{ flexDirection: "row" }}>
@@ -49,13 +61,23 @@ const AnswerCard = (props) => {
           style={{ flexDirection: "row", padding: 5, alignItems: "center" }}
         >
           <View style={{ paddingLeft: 5, flexDirection: "row", flex: 1 }}>
-            <Icon name="thumbs-up" type="font-awesome" />
+            <Icon
+              name="thumbs-up"
+              type="font-awesome"
+              onPress={() => upvote(id)}
+              iconStyle={upvoted ? { color: "blue" } : { color: "black" }}
+            />
             <Text style={{ paddingTop: 5, paddingLeft: 5 }}>
               {upvotes} upvotes
             </Text>
           </View>
           <View style={{ paddingLeft: 15, flexDirection: "row", flex: 1 }}>
-            <Icon name="thumbs-down" type="font-awesome" />
+            <Icon
+              name="thumbs-down"
+              type="font-awesome"
+              onPress={() => downvote(id)}
+              iconStyle={downvoted ? { color: "blue" } : { color: "black" }}
+            />
             <Text style={{ paddingTop: 5, paddingLeft: 5 }}>
               {downvotes} downvotes
             </Text>

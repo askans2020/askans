@@ -16,6 +16,10 @@ import {
   getQuestionById,
   answerQuestion,
   getQuestionAnswers,
+  upvoteQuestion,
+  downvoteQuestion,
+  upvoteAnswer,
+  downvoteAnswer,
 } from "./redux/questionReducer";
 
 class Question extends Component {
@@ -50,6 +54,30 @@ class Question extends Component {
       });
     }
   };
+
+  handleQuestionUpvote = async (questionId) => {
+    const questionInfo = { userId: this.props.user.uid, questionId };
+    await this.props.upvoteQuestion(questionInfo);
+  };
+
+  handleQuestionDownvote = async (questionId) => {
+    const questionInfo = {
+      userId: this.props.user.uid,
+      questionId,
+    };
+    await this.props.downvoteQuestion(questionInfo);
+  };
+
+  handleAnswerUpvote = async (answerId) => {
+    const answerInfo = { userId: this.props.user.uid, answerId };
+    await this.props.upvoteAnswer(answerInfo);
+  };
+
+  handleAnswerDownvote = async (answerId) => {
+    const answerInfo = { userId: this.props.user.uid, answerId };
+    await this.props.downvoteAnswer(answerInfo);
+  };
+
   componentDidMount = async () => {
     const { questionId } = this.props.route.params;
     await this.handleGetQuestionById(questionId);
@@ -70,18 +98,32 @@ class Question extends Component {
           containerStyle={{ backgroundColor: "#D3D3D3" }}
         />
         <ScrollView style={{ flex: 1, padding: 5 }}>
-          <QuestionCard
-            name={this.state.question.name}
-            profileImage={this.state.question.profileImage}
-            title={this.state.question.title}
-            text={this.state.question.text}
-            upvotes={this.state.question.upvotes}
-            downvotes={this.state.question.downvotes}
-            answers={this.state.question.answers}
-            date={this.state.question.date}
-            navigation={this.props.navigation}
-          />
-
+          {this.props.question && this.props.question.downvotedBy ? (
+            <QuestionCard
+              name={this.props.question.name}
+              profileImage={this.props.question.profileImage}
+              title={this.props.question.title}
+              text={this.props.question.text}
+              upvotes={this.props.question.upvotes}
+              downvotes={this.props.question.downvotes}
+              answers={this.props.question.answers}
+              date={this.props.question.date}
+              navigation={this.props.navigation}
+              upvote={(questionId) => this.handleQuestionUpvote(questionId)}
+              downvote={(questionId) => this.handleQuestionDownvote(questionId)}
+              upvoted={
+                this.props.question.upvotedBy.includes(this.props.user.uid)
+                  ? true
+                  : false
+              }
+              downvoted={
+                this.props.question.downvotedBy.includes(this.props.user.uid)
+                  ? true
+                  : false
+              }
+              id={this.props.question.id}
+            />
+          ) : null}
           <View style={{ margin: 10 }}>
             <Text style={{ fontWeight: "bold", fontSize: 20 }}>Answers:</Text>
           </View>
@@ -93,8 +135,20 @@ class Question extends Component {
                 answer={answer.answer}
                 upvotes={answer.upvotes}
                 downvotes={answer.downvotes}
+                upvote={(answerId) => this.handleAnswerUpvote(answerId)}
+                downvote={(questionId) => this.handleAnswerDownvote(questionId)}
                 date={answer.date}
                 key={key}
+                upvoted={
+                  answer.upvotedBy.includes(this.props.user.uid) ? true : false
+                }
+                downvoted={
+                  answer.downvotedBy.includes(this.props.user.uid)
+                    ? true
+                    : false
+                }
+                id={answer.id}
+                questionId={answer.questionId}
               />
             ))}
           </View>
@@ -178,5 +232,9 @@ const actionCreators = {
   getQuestionById,
   answerQuestion,
   getQuestionAnswers,
+  upvoteQuestion,
+  downvoteQuestion,
+  upvoteAnswer,
+  downvoteAnswer,
 };
 export default connect(mapState, actionCreators)(Question);

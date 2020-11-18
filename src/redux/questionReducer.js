@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { firestore } from "firebase";
 import firebase, { db } from "../../firebaseConfig";
-
 const getQuestionById = createAsyncThunk(
   "question/getQuestionById",
   async (questionId) => {
@@ -85,10 +84,158 @@ const getQuestionAnswers = createAsyncThunk(
     return answersData;
   }
 );
+
+const upvoteQuestion = createAsyncThunk(
+  "question/upvoteQuestion",
+  async (questionInfo) => {
+    const { userId, questionId } = questionInfo;
+    let question = await db.collection("Questions").doc(questionId).get();
+
+    if (question.data().upvotedBy.includes(userId)) {
+      const ref = db.collection("Questions").doc(questionId);
+      await ref.update({
+        upvotedBy: firestore.FieldValue.arrayRemove(userId),
+        upvotes: firestore.FieldValue.increment(-1),
+      });
+    } else if (question.data().downvotedBy.includes(userId)) {
+      const ref = db.collection("Questions").doc(questionId);
+      await ref.update({
+        upvotedBy: firestore.FieldValue.arrayUnion(userId),
+        downvotedBy: firestore.FieldValue.arrayRemove(userId),
+        upvotes: firestore.FieldValue.increment(1),
+        downvotes: firestore.FieldValue.increment(-1),
+      });
+    } else {
+      const ref = db.collection("Questions").doc(questionId);
+      await ref.update({
+        upvotedBy: firestore.FieldValue.arrayUnion(userId),
+        upvotes: firestore.FieldValue.increment(1),
+      });
+    }
+
+    question = await db.collection("Questions").doc(questionId).get();
+    question = question.data();
+    question.timestamp = new Date(question.timestamp).toLocaleDateString();
+    question.date = question.timestamp;
+    return question;
+  }
+);
+
+const downvoteQuestion = createAsyncThunk(
+  "question/downvoteQuesion",
+  async (questionInfo) => {
+    const { questionId, userId } = questionInfo;
+
+    let question = await db.collection("Questions").doc(questionId).get();
+    question = question.data();
+    if (
+      !question.upvotedBy.includes(userId) &&
+      !question.downvotedBy.includes(userId)
+    ) {
+      let ref = db.collection("Questions").doc(questionId);
+      await ref.update({
+        downvotes: firestore.FieldValue.increment(1),
+        downvotedBy: firestore.FieldValue.arrayUnion(userId),
+      });
+    } else if (question.upvotedBy.includes(userId)) {
+      let ref = db.collection("Questions").doc(questionId);
+      await ref.update({
+        upvotes: firestore.FieldValue.increment(-1),
+        upvotedBy: firestore.FieldValue.arrayRemove(userId),
+        downvotes: firestore.FieldValue.increment(1),
+        downvotedBy: firestore.FieldValue.arrayUnion(userId),
+      });
+    } else {
+      let ref = db.collection("Questions").doc(questionId);
+      await ref.update({
+        downvotes: firestore.FieldValue.increment(-1),
+        downvotedBy: firestore.FieldValue.arrayRemove(userId),
+      });
+    }
+
+    question = await db.collection("Questions").doc(questionId).get();
+    question = question.data();
+    question.timestamp = new Date(question.timestamp).toLocaleDateString();
+    question.date = question.timestamp;
+    return question;
+  }
+);
+
+const upvoteAnswer = createAsyncThunk(
+  "question/upvoteAnswer",
+  async (answerInfo) => {
+    const { userId, answerId } = answerInfo;
+    let answer = await db.collection("Answers").doc(answerId).get();
+
+    if (answer.data().upvotedBy.includes(userId)) {
+      const ref = db.collection("Answers").doc(answerId);
+      await ref.update({
+        upvotedBy: firestore.FieldValue.arrayRemove(userId),
+        upvotes: firestore.FieldValue.increment(-1),
+      });
+    } else if (answer.data().downvotedBy.includes(userId)) {
+      const ref = db.collection("Answers").doc(answerId);
+      await ref.update({
+        upvotedBy: firestore.FieldValue.arrayUnion(userId),
+        downvotedBy: firestore.FieldValue.arrayRemove(userId),
+        upvotes: firestore.FieldValue.increment(1),
+        downvotes: firestore.FieldValue.increment(-1),
+      });
+    } else {
+      const ref = db.collection("Answers").doc(answerId);
+      await ref.update({
+        upvotedBy: firestore.FieldValue.arrayUnion(userId),
+        upvotes: firestore.FieldValue.increment(1),
+      });
+    }
+    answer = await db.collection("Answers").doc(answerId).get();
+    answer = answer.data();
+    answer.timestamp = new Date(answer.timestamp).toLocaleDateString();
+    answer.date = answer.timestamp;
+    return answer;
+  }
+);
+
+const downvoteAnswer = createAsyncThunk(
+  "question/upvoteAnswer",
+  async (answerInfo) => {
+    const { userId, answerId } = answerInfo;
+    let answer = await db.collection("Answers").doc(answerId).get();
+
+    if (answer.data().upvotedBy.includes(userId)) {
+      const ref = db.collection("Answers").doc(answerId);
+      await ref.update({
+        upvotes: firestore.FieldValue.increment(-1),
+        upvotedBy: firestore.FieldValue.arrayRemove(userId),
+        downvotes: firestore.FieldValue.increment(1),
+        downvotedBy: firestore.FieldValue.arrayUnion(userId),
+      });
+    } else if (answer.data().downvotedBy.includes(userId)) {
+      const ref = db.collection("Answers").doc(answerId);
+      await ref.update({
+        downvotes: firestore.FieldValue.increment(-1),
+        downvotedBy: firestore.FieldValue.arrayRemove(userId),
+      });
+    } else {
+      const ref = db.collection("Answers").doc(answerId);
+      await ref.update({
+        downvotes: firestore.FieldValue.increment(1),
+        downvotedBy: firestore.FieldValue.arrayUnion(userId),
+      });
+    }
+    answer = await db.collection("Answers").doc(answerId).get();
+    answer = answer.data();
+    answer.timestamp = new Date(answer.timestamp).toLocaleDateString();
+    answer.date = answer.timestamp;
+    return answer;
+  }
+);
+
 const initialState = {
   question: {},
   answers: [],
 };
+
 const questionSlicer = createSlice({
   name: "question",
   initialState,
@@ -107,8 +254,54 @@ const questionSlicer = createSlice({
       state.answers = action.payload;
       return state;
     },
+    [upvoteQuestion.fulfilled]: (state, action) => {
+      state.question.upvotedBy = action.payload.upvotedBy;
+      state.question.downvotedBy = action.payload.downvotedBy;
+      state.question.upvotes = action.payload.upvotes;
+      state.question.downvotes = action.payload.downvotes;
+      return state;
+    },
+    [downvoteQuestion.fulfilled]: (state, action) => {
+      state.question.upvotedBy = action.payload.upvotedBy;
+      state.question.downvotedBy = action.payload.downvotedBy;
+      state.question.upvotes = action.payload.upvotes;
+      state.question.downvotes = action.payload.downvotes;
+      return state;
+    },
+    [upvoteAnswer.fulfilled]: (state, action) => {
+      state.answers.map((answer) => {
+        if (answer.id == action.payload.id) {
+          answer.upvotedBy = action.payload.upvotedBy;
+          answer.downvotedBy = action.payload.downvotedBy;
+          answer.upvotes = action.payload.upvotes;
+          answer.downvotes = action.payload.downvotes;
+        }
+        return answer;
+      });
+      return state;
+    },
+    [downvoteAnswer.fulfilled]: (state, action) => {
+      state.answers.map((answer) => {
+        if (answer.id == action.payload.id) {
+          answer.upvotedBy = action.payload.upvotedBy;
+          answer.downvotedBy = action.payload.downvotedBy;
+          answer.upvotes = action.payload.upvotes;
+          answer.downvotes = action.payload.downvotes;
+        }
+        return answer;
+      });
+      return state;
+    },
   },
 });
 
-export { getQuestionById, answerQuestion, getQuestionAnswers };
+export {
+  getQuestionById,
+  answerQuestion,
+  getQuestionAnswers,
+  upvoteQuestion,
+  downvoteQuestion,
+  upvoteAnswer,
+  downvoteAnswer,
+};
 export default questionSlicer.reducer;
