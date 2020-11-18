@@ -9,12 +9,40 @@ import {
 } from "react-native";
 import { Header, Avatar, Input, Button } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker";
+import { connect } from "react-redux";
+import { updateProfile } from "./redux/userReducer";
 
 class EditProfile extends Component {
   state = {
-    gender: "female",
-    language: "amharic",
+    bio: "",
+    firstName: "",
+    lastName: "",
+    gender: "",
+    language: "",
+    photoURL: "",
   };
+
+  handleUpdateProfile = async (firstName, lastName, gender, language) => {
+    if (firstName != "" && lastName != "" && gender != "" && language != "") {
+      const userInfo = {
+        userId: this.props.user.uid,
+        firstName,
+        lastName,
+        language,
+        gender,
+      };
+      this.props.updateProfile(userInfo);
+    }
+  };
+  handleFillInformation = () => {
+    this.setState({
+      ...this.props.user,
+    });
+  };
+  componentDidMount = () => {
+    this.handleFillInformation();
+  };
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -46,21 +74,28 @@ class EditProfile extends Component {
                 <Avatar
                   rounded
                   source={{
-                    uri:
-                      "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg",
+                    uri: this.state.photoURL ? this.state.photoURL : null,
                   }}
                   size="medium"
                 />
               </View>
               <View style={{ flex: 1, padding: 10 }}>
-                <Text>Marry Joe</Text>
+                <Text>{this.state.firstName + " " + this.state.lastName}</Text>
               </View>
             </View>
             <View style={{ marginVertical: 10 }}>
               <TextInput
+                style={styles.detailinput}
                 multiline={true}
                 style={[styles.inputContainer, { minHeight: 150 }]}
                 placeholder="Update bio..."
+                onChangeText={(text) => {
+                  this.setState({
+                    ...this.state,
+                    bio: text,
+                  });
+                }}
+                value={this.state.bio}
               />
               <Button style={{ marginLeft: 200 }} title="Update bio" />
             </View>
@@ -73,10 +108,24 @@ class EditProfile extends Component {
               <TextInput
                 style={styles.inputContainer}
                 placeholder="First Name"
+                onChangeText={(text) => {
+                  this.setState({
+                    ...this.state,
+                    firstName: text,
+                  });
+                }}
+                value={this.state.firstName}
               />
               <TextInput
                 style={styles.inputContainer}
-                placeholder=" Last Name"
+                placeholder="Last Name"
+                onChangeText={(text) => {
+                  this.setState({
+                    ...this.state,
+                    lastName: text,
+                  });
+                }}
+                value={this.state.lastName}
               />
 
               <View style={styles.dropdown}>
@@ -84,26 +133,28 @@ class EditProfile extends Component {
                   items={[
                     {
                       label: "AMHARIC",
-                      value: "amharic",
+                      value: "Amharic",
                       hidden: true,
                     },
                     {
                       label: "ENGLISH",
-                      value: "english",
+                      value: "English",
                     },
                   ]}
-                  defaultValue={this.state.any}
+                  defaultValue={this.state.language}
                   containerStyle={{ height: 40 }}
                   style={{ backgroundColor: "#fafafa" }}
                   itemStyle={{
                     justifyContent: "flex-start",
                   }}
                   dropDownStyle={{ backgroundColor: "#fafafa" }}
-                  onChangeItem={(item) =>
+                  onChangeItem={(item) => {
                     this.setState({
+                      ...this.state,
                       language: item.value,
-                    })
-                  }
+                    });
+                  }}
+                  placeholder="Language"
                 />
               </View>
               <View style={[styles.dropdown, { zIndex: 90 }]}>
@@ -111,13 +162,13 @@ class EditProfile extends Component {
                   style={{ marginTop: 50 }}
                   items={[
                     {
-                      label: "FEMAL",
-                      value: "female",
+                      label: "FEMALE",
+                      value: "Female",
                       hidden: true,
                     },
                     {
                       label: "MALE",
-                      value: "male",
+                      value: "Male",
                     },
                   ]}
                   defaultValue={this.state.any}
@@ -129,13 +180,27 @@ class EditProfile extends Component {
                   dropDownStyle={{ backgroundColor: "#fafafa" }}
                   onChangeItem={(item) =>
                     this.setState({
+                      ...this.state,
                       gender: item.value,
                     })
                   }
+                  defaultValue={this.state.gender}
+                  placeholder="Gender"
                 />
               </View>
 
-              <Button style={{ marginTop: 40 }} title="Update info" />
+              <Button
+                style={{ marginTop: 20, marginHorizontal: 10 }}
+                title="Update info"
+                onPress={() => {
+                  this.handleUpdateProfile(
+                    this.state.firstName,
+                    this.state.lastName,
+                    this.state.gender,
+                    this.state.language
+                  );
+                }}
+              />
             </View>
           </KeyboardAvoidingView>
         </ScrollView>
@@ -170,4 +235,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
-export default EditProfile;
+const mapState = (state) => {
+  return {
+    user: state.user,
+  };
+};
+const actionCreators = { updateProfile };
+export default connect(mapState, actionCreators)(EditProfile);
