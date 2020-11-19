@@ -11,10 +11,70 @@ import {
 } from "react-native";
 import { Header, Avatar, Input, Button } from "react-native-elements";
 import { Picker } from "@react-native-community/picker";
+import DropDownPicker from "react-native-dropdown-picker";
+import { db } from "../firebaseConfig";
+import { connect } from "react-redux";
+import { askQuestion } from "./redux/questionsReducer";
+import { getCategories } from "./redux/categoriesReducer";
 
 class Ask extends Component {
-  richText = React.createRef();
+  state = {
+    categories: [],
+    question: {
+      title: "",
+      text: "",
+      category: "",
+    },
+    selectedCategory: null,
+  };
 
+  handleAsk = async (title, text, category) => {
+    if (title != "" && text != "" && category != "") {
+      const userId = this.props.user.uid;
+      const language = this.props.user.language;
+      const questionInfo = {
+        userId,
+        title,
+        text,
+        category,
+        language,
+      };
+      await this.props.askQuestion(questionInfo);
+      this.setState({
+        ...this.state,
+        question: {
+          title: "",
+          text: "",
+          category: "",
+        },
+        selectedCategory: null,
+      });
+    }
+  };
+
+  getCategories = async () => {
+    if (this.props.user) {
+      await this.props.getCategories(this.props.user.language);
+    }
+
+    const categories = this.props.categories;
+    let categoryList = [];
+
+    categories.categories.map((category) => {
+      let ctgry = {};
+      ctgry["label"] = category.name;
+      ctgry["value"] = category.name;
+      categoryList.push(ctgry);
+    });
+    this.setState({
+      ...this.state,
+      categories: categoryList,
+    });
+  };
+
+  componentDidMount = () => {
+    this.getCategories();
+  };
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -75,34 +135,76 @@ class Ask extends Component {
                   </View>
                 </View>
                 <View style={{ margin: 5 }}>
-                  <Input placeholder="Add question title." multiline={true} />
-                </View>
-                <View style={{ margin: 5 }}>
-                  <Input
-                    placeholder="Add more details for your question."
+                  <TextInput
+                    style={styles.titleinput}
+                    placeholder="Add question title."
                     multiline={true}
+                    onChangeText={(text) =>
+                      this.setState({
+                        ...this.state,
+                        question: {
+                          ...this.state.question,
+                          title: text,
+                        },
+                      })
+                    }
+                    value={this.state.question.title}
                   />
                 </View>
-                <View
-                  style={{
-                    margin: 5,
-                    padding: 0,
-                    marginHorizontal: 10,
-                  }}
-                >
-                  <Picker
-                    selectedValue={"category"}
-                    mode={"dropdown"}
-                    itemStyle={{ padding: 0, margin: 0, fontSize: 15 }}
-                  >
-                    <Picker.Item label="Technology" value="java" />
-                    <Picker.Item label="Science" value="js" />
-                    <Picker.Item label="Math" value="js" />
-                    <Picker.Item label="Select Category" value="category" />
-                    <Picker.Item label="Artificial Intelligence" value="js" />
-                    <Picker.Item label="Programming" value="js" />
-                  </Picker>
-                  <Button title="Ask" />
+                <View style={{ margin: 5, marginTop: 5 }}>
+                  <TextInput
+                    style={styles.detailinput}
+                    placeholder="Add more details for your question."
+                    multiline={true}
+                    onChangeText={(text) =>
+                      this.setState({
+                        ...this.state,
+                        question: {
+                          ...this.state.question,
+                          text: text,
+                        },
+                      })
+                    }
+                    value={this.state.question.text}
+                  />
+                </View>
+
+                <View>
+                  <View style={styles.dropdown}>
+                    <DropDownPicker
+                      style={{}}
+                      items={this.state.categories}
+                      //defaultValue={this.state.any}
+                      style={{ backgroundColor: "#fafafa" }}
+                      itemStyle={{
+                        justifyContent: "flex-start",
+                      }}
+                      dropDownStyle={{ backgroundColor: "#fafafa" }}
+                      onChangeItem={(item) =>
+                        this.setState({
+                          ...this.state,
+                          question: {
+                            ...this.state.question,
+                            category: item.value,
+                          },
+                          selectedCategory: item.value,
+                        })
+                      }
+                      defaultValue={this.state.selectedCategory}
+                      placeholder="Select Category"
+                    />
+                  </View>
+                  <Button
+                    style={{ marginTop: 20, marginHorizontal: 10 }}
+                    title="Ask"
+                    onPress={() => {
+                      this.handleAsk(
+                        this.state.question.title,
+                        this.state.question.text,
+                        this.state.question.category
+                      );
+                    }}
+                  />
                 </View>
               </View>
             </TouchableWithoutFeedback>
@@ -112,4 +214,54 @@ class Ask extends Component {
     );
   }
 }
-export default Ask;
+const styles = StyleSheet.create({
+  dropdown: {
+    zIndex: 100,
+    marginTop: 5,
+    borderWidth: 0.25,
+    minHeight: 50,
+    borderRadius: 4,
+    padding: 10,
+    fontSize: 15,
+    backgroundColor: "white",
+    borderColor: "gray",
+    marginBottom: 10,
+    marginHorizontal: 10,
+  },
+  titleinput: {
+    borderWidth: 0.25,
+    minHeight: 50,
+    borderRadius: 4,
+    padding: 10,
+    fontSize: 18,
+    backgroundColor: "white",
+    borderColor: "gray",
+    marginBottom: 10,
+    marginHorizontal: 5,
+    fontWeight: "bold",
+  },
+  detailinput: {
+    borderWidth: 0.25,
+    minHeight: 150,
+    borderRadius: 4,
+    padding: 10,
+    fontSize: 15,
+    backgroundColor: "white",
+    borderColor: "gray",
+    marginBottom: 10,
+    marginHorizontal: 5,
+  },
+});
+
+const mapState = (state) => {
+  return {
+    categories: state.categories,
+    questions: state.questions,
+    user: state.user,
+  };
+};
+const actionCreators = {
+  askQuestion,
+  getCategories,
+};
+export default connect(mapState, actionCreators)(Ask);

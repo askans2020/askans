@@ -12,13 +12,13 @@ const HorizontalTopics = (props) => {
         marginBottom: 10,
       }}
     >
-      <View style={{ margin: 5, padding: 5 }}>
+      {/* <View style={{ margin: 5, padding: 5 }}>
         <Icon name="minus" type="font-awesome" size={20} />
-      </View>
+      </View> */}
       <ScrollView horizontal={true} containerStyle={{ padding: 5, flex: 1 }}>
         {topics.map((topic, key) => (
           <Button
-            title={topic}
+            title={topic.name}
             type="solid"
             containerStyle={{ margin: 5 }}
             buttonStyle={{ backgroundColor: "#D3D3D3" }}
@@ -28,9 +28,9 @@ const HorizontalTopics = (props) => {
           />
         ))}
       </ScrollView>
-      <View style={{ margin: 6, padding: 5 }}>
+      {/* <View style={{ margin: 6, padding: 5 }}>
         <Icon name="plus" type="font-awesome" size={20} />
-      </View>
+      </View> */}
     </View>
   );
 };

@@ -11,44 +11,78 @@ import { Header, Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import QuestionCard from "./components/QuestionCard";
 import AnswerCard from "./components/AnswerCard";
+import { connect } from "react-redux";
+import {
+  getQuestionById,
+  answerQuestion,
+  getQuestionAnswers,
+  upvoteQuestion,
+  downvoteQuestion,
+  upvoteAnswer,
+  downvoteAnswer,
+} from "./redux/questionReducer";
+
 class Question extends Component {
   state = {
-    question: {
-      name: "John Doe",
-      date: "MM/DD/YYYY",
-      profileImage:
-        "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
-      title: "Post according to an editorial calendar?",
-      question:
-        "Instagram was designed as an app to create content via a mobile device. As a result, it is only practical to use one of the various scheduling tools available, so that you can post systematically. By the help of using an editorial calendar, you are able to schedule regular posts in advance, to keep your followers engaged.",
-      upvotes: 123,
-      downvotes: 10,
-      answers: 24,
-    },
-    answers: [
-      {
-        name: "John Doe",
-        date: "MM/DD/YYYY",
-        profileImage:
-          "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
-        answer:
-          "Instagram was designed as an app to create content via a mobile device. As a result, it is only practical to use one of the various scheduling tools available, so that you can post systematically. By the help of using an editorial calendar, you are able to schedule regular posts in advance, to keep your followers engaged.",
-        upvotes: 123,
-        downvotes: 10,
-      },
-      {
-        name: "John Doe",
-        date: "MM/DD/YYYY",
-        profileImage:
-          "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
-        answer:
-          "Instagram was designed as an app to create content via a mobile device. As a result, it is only practical to use one of the various scheduling tools available, so that you can post systematically. By the help of using an editorial calendar, you are able to schedule regular posts in advance, to keep your followers engaged.",
-        upvotes: 123,
-        downvotes: 10,
-      },
-    ],
+    question: {},
+    answers: [],
+    answer: "",
   };
 
+  handleGetQuestionById = async (questionId) => {
+    await this.props.getQuestionById(questionId);
+    this.setState({
+      ...this.state,
+      question: this.props.question,
+    });
+  };
+
+  handleGetQuestionAnswers = async (questionId) => {
+    await this.props.getQuestionAnswers(questionId);
+    this.setState({
+      ...this.state,
+      answers: this.props.answers,
+    });
+  };
+  handleAnswer = async (userId, questionId, answer, language) => {
+    if (userId != "" && questionId != "" && answer != "" && language != "") {
+      const answerInfo = { userId, questionId, answer, language };
+      await this.props.answerQuestion(answerInfo);
+      this.setState({
+        ...this.state,
+        answer: "",
+      });
+    }
+  };
+
+  handleQuestionUpvote = async (questionId) => {
+    const questionInfo = { userId: this.props.user.uid, questionId };
+    await this.props.upvoteQuestion(questionInfo);
+  };
+
+  handleQuestionDownvote = async (questionId) => {
+    const questionInfo = {
+      userId: this.props.user.uid,
+      questionId,
+    };
+    await this.props.downvoteQuestion(questionInfo);
+  };
+
+  handleAnswerUpvote = async (answerId) => {
+    const answerInfo = { userId: this.props.user.uid, answerId };
+    await this.props.upvoteAnswer(answerInfo);
+  };
+
+  handleAnswerDownvote = async (answerId) => {
+    const answerInfo = { userId: this.props.user.uid, answerId };
+    await this.props.downvoteAnswer(answerInfo);
+  };
+
+  componentDidMount = async () => {
+    const { questionId } = this.props.route.params;
+    await this.handleGetQuestionById(questionId);
+    await this.handleGetQuestionAnswers(questionId);
+  };
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -64,30 +98,57 @@ class Question extends Component {
           containerStyle={{ backgroundColor: "#D3D3D3" }}
         />
         <ScrollView style={{ flex: 1, padding: 5 }}>
-          <QuestionCard
-            name={this.state.question.name}
-            profileImage={this.state.question.profileImage}
-            title={this.state.question.title}
-            question={this.state.question.question}
-            upvotes={this.state.question.upvotes}
-            downvotes={this.state.question.downvotes}
-            answers={this.state.question.answers}
-            date={this.state.question.date}
-            navigation={this.props.navigation}
-          />
+          {this.props.question && this.props.question.downvotedBy ? (
+            <QuestionCard
+              name={this.props.question.name}
+              profileImage={this.props.question.profileImage}
+              title={this.props.question.title}
+              text={this.props.question.text}
+              upvotes={this.props.question.upvotes}
+              downvotes={this.props.question.downvotes}
+              answers={this.props.question.answers}
+              date={this.props.question.date}
+              navigation={this.props.navigation}
+              upvote={(questionId) => this.handleQuestionUpvote(questionId)}
+              downvote={(questionId) => this.handleQuestionDownvote(questionId)}
+              upvoted={
+                this.props.question.upvotedBy.includes(this.props.user.uid)
+                  ? true
+                  : false
+              }
+              downvoted={
+                this.props.question.downvotedBy.includes(this.props.user.uid)
+                  ? true
+                  : false
+              }
+              id={this.props.question.id}
+            />
+          ) : null}
           <View style={{ margin: 10 }}>
             <Text style={{ fontWeight: "bold", fontSize: 20 }}>Answers:</Text>
           </View>
           <View style={{ padding: 5 }}>
-            {this.state.answers.map((answer, key) => (
+            {this.props.answers.map((answer, key) => (
               <AnswerCard
                 name={answer.name}
                 profileImage={answer.profileImage}
                 answer={answer.answer}
-                upvotes={this.state.question.upvotes}
-                downvotes={this.state.question.downvotes}
-                date={this.state.question.date}
+                upvotes={answer.upvotes}
+                downvotes={answer.downvotes}
+                upvote={(answerId) => this.handleAnswerUpvote(answerId)}
+                downvote={(questionId) => this.handleAnswerDownvote(questionId)}
+                date={answer.date}
                 key={key}
+                upvoted={
+                  answer.upvotedBy.includes(this.props.user.uid) ? true : false
+                }
+                downvoted={
+                  answer.downvotedBy.includes(this.props.user.uid)
+                    ? true
+                    : false
+                }
+                id={answer.id}
+                questionId={answer.questionId}
               />
             ))}
           </View>
@@ -108,7 +169,14 @@ class Question extends Component {
               width: "100%",
             }}
           >
-            <TextInput style={styles.textInput} placeholder="Answer..." />
+            <TextInput
+              style={styles.textInput}
+              placeholder="Answer..."
+              value={this.state.answer}
+              onChangeText={(text) =>
+                this.setState({ ...this.state, answer: text })
+              }
+            />
             <Button
               icon={<Icon name="arrow-circle-up" size={35} color="black" />}
               buttonStyle={{
@@ -118,6 +186,14 @@ class Question extends Component {
                 paddingRight: 5,
                 paddingLeft: 10,
               }}
+              onPress={() =>
+                this.handleAnswer(
+                  this.props.user.uid,
+                  this.state.question.id,
+                  this.state.answer,
+                  this.props.user.language
+                )
+              }
             />
           </View>
         </KeyboardAvoidingView>
@@ -144,4 +220,21 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
 });
-export default Question;
+
+const mapState = (state) => {
+  return {
+    user: state.user,
+    question: state.question.question,
+    answers: state.question.answers,
+  };
+};
+const actionCreators = {
+  getQuestionById,
+  answerQuestion,
+  getQuestionAnswers,
+  upvoteQuestion,
+  downvoteQuestion,
+  upvoteAnswer,
+  downvoteAnswer,
+};
+export default connect(mapState, actionCreators)(Question);
