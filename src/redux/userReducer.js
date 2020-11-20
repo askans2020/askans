@@ -28,6 +28,15 @@ const updateProfile = createAsyncThunk(
     return user;
   }
 );
+const updateBio = createAsyncThunk("user/updateBio", async (bioInfo) => {
+  const { userId, bio } = bioInfo;
+  await db.collection("Users").doc(userId).update({
+    bio,
+  });
+  let user = await db.collection("Users").doc(userId).get();
+  user = user.data();
+  return user;
+});
 const initialState = {};
 const userSlice = createSlice({
   name: "user",
@@ -45,9 +54,13 @@ const userSlice = createSlice({
       state = action.payload;
       return state;
     },
+    [updateBio.fulfilled]: (state, action) => {
+      state = action.payload;
+      return state;
+    },
   },
 });
 
 export const { changeFirstName, changeLastName } = userSlice.actions;
-export { setUser, updateProfile };
+export { setUser, updateProfile, updateBio };
 export default userSlice.reducer;
