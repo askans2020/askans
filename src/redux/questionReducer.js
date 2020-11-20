@@ -20,7 +20,7 @@ const getQuestionById = createAsyncThunk(
 const answerQuestion = createAsyncThunk(
   "question/answerQuestion",
   async (answerParam) => {
-    const { questionId, userId, answer, language } = answerParam;
+    const { questionId, userId, answer, language, askedBy } = answerParam;
     const ref = db.collection("Answers").doc();
     const answerData = {
       id: ref.id,
@@ -53,6 +53,22 @@ const answerQuestion = createAsyncThunk(
     user = user.data();
     answerInfo.name = user.firstName + " " + user.lastName;
     answerInfo.profileImage = user.photoURL;
+
+    if (userId != askedBy) {
+      const ref = db.collection("Notifications").doc();
+      const notificationInfo = {
+        id: ref.id,
+        notify: askedBy,
+        notifier: userId,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        type: "ANSWER_QUESTION",
+        questionId: questionId,
+        answerId: answerInfo.id,
+        message: "answered your question.",
+        seen: false,
+      };
+      await ref.set(notificationInfo);
+    }
     return answerInfo;
   }
 );
@@ -88,7 +104,7 @@ const getQuestionAnswers = createAsyncThunk(
 const upvoteQuestion = createAsyncThunk(
   "question/upvoteQuestion",
   async (questionInfo) => {
-    const { userId, questionId } = questionInfo;
+    const { userId, questionId, askedBy } = questionInfo;
     let question = await db.collection("Questions").doc(questionId).get();
 
     if (question.data().upvotedBy.includes(userId)) {
@@ -117,6 +133,38 @@ const upvoteQuestion = createAsyncThunk(
     question = question.data();
     question.timestamp = new Date(question.timestamp).toLocaleDateString();
     question.date = question.timestamp;
+    let notif = await db
+      .collection("Notifications")
+      .where("notifier", "==", userId)
+      .where("questionId", "==", questionId)
+      .get();
+    let notifList = [];
+    notif.forEach((notification) => {
+      notifList.push(notification.data());
+    });
+
+    for (let notification of notifList) {
+      if (notification.type != "ANSWER_QUESTION") {
+        await db.collection("Notifications").doc(notification.id).delete();
+      }
+    }
+
+    if (question.upvotedBy.includes(userId) && userId != askedBy) {
+      if (userId != askedBy) {
+        const ref = db.collection("Notifications").doc();
+        const notificationInfo = {
+          id: ref.id,
+          notify: askedBy,
+          notifier: userId,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          type: "UPVOTE_QUESTION",
+          questionId: questionId,
+          message: "upvoted your question.",
+          seen: false,
+        };
+        await ref.set(notificationInfo);
+      }
+    }
     return question;
   }
 );
@@ -124,7 +172,7 @@ const upvoteQuestion = createAsyncThunk(
 const downvoteQuestion = createAsyncThunk(
   "question/downvoteQuesion",
   async (questionInfo) => {
-    const { questionId, userId } = questionInfo;
+    const { questionId, userId, askedBy } = questionInfo;
 
     let question = await db.collection("Questions").doc(questionId).get();
     question = question.data();
@@ -157,6 +205,40 @@ const downvoteQuestion = createAsyncThunk(
     question = question.data();
     question.timestamp = new Date(question.timestamp).toLocaleDateString();
     question.date = question.timestamp;
+
+    let notif = await db
+      .collection("Notifications")
+      .where("notifier", "==", userId)
+      .where("questionId", "==", questionId)
+      .get();
+    let notifList = [];
+    notif.forEach((notification) => {
+      notifList.push(notification.data());
+    });
+
+    for (let notification of notifList) {
+      if (notification.type != "ANSWER_QUESTION") {
+        await db.collection("Notifications").doc(notification.id).delete();
+      }
+    }
+
+    if (question.downvotedBy.includes(userId) && userId != askedBy) {
+      if (userId != askedBy) {
+        const ref = db.collection("Notifications").doc();
+        const notificationInfo = {
+          id: ref.id,
+          notify: askedBy,
+          notifier: userId,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          type: "DOWNVOTE_QUESTION",
+          questionId: questionId,
+          message: "downvoted your question.",
+          seen: false,
+        };
+        await ref.set(notificationInfo);
+      }
+    }
+
     return question;
   }
 );

@@ -71,15 +71,16 @@ class Feed extends Component {
       questions: this.props.questions,
     });
   };
-  handleUpvote = async (questionId) => {
-    const questionInfo = { userId: this.props.user.uid, questionId };
+  handleUpvote = async (questionId, askedBy) => {
+    const questionInfo = { userId: this.props.user.uid, questionId, askedBy };
     await this.props.upvoteQuestion(questionInfo);
   };
 
-  handleDownvote = async (questionId) => {
+  handleDownvote = async (questionId, askedBy) => {
     const questionInfo = {
       userId: this.props.user.uid,
       questionId,
+      askedBy,
     };
     this.props.downvoteQuestion(questionInfo);
   };
@@ -136,8 +137,12 @@ class Feed extends Component {
                 date={question.date}
                 key={key}
                 navigation={this.props.navigation}
-                upvote={(questionId) => this.handleUpvote(questionId)}
-                downvote={(questionId) => this.handleDownvote(questionId)}
+                upvote={(questionId) =>
+                  this.handleUpvote(questionId, question.askedBy)
+                }
+                downvote={(questionId) =>
+                  this.handleDownvote(questionId, question.askedBy)
+                }
                 upvoted={
                   question.upvotedBy.includes(this.props.user.uid)
                     ? true

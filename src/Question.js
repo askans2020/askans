@@ -44,9 +44,15 @@ class Question extends Component {
       answers: this.props.answers,
     });
   };
-  handleAnswer = async (userId, questionId, answer, language) => {
-    if (userId != "" && questionId != "" && answer != "" && language != "") {
-      const answerInfo = { userId, questionId, answer, language };
+  handleAnswer = async (userId, questionId, askedBy, answer, language) => {
+    if (
+      userId != "" &&
+      questionId != "" &&
+      askedBy != "" &&
+      answer != "" &&
+      language != ""
+    ) {
+      const answerInfo = { userId, questionId, askedBy, answer, language };
       await this.props.answerQuestion(answerInfo);
       this.setState({
         ...this.state,
@@ -56,7 +62,11 @@ class Question extends Component {
   };
 
   handleQuestionUpvote = async (questionId) => {
-    const questionInfo = { userId: this.props.user.uid, questionId };
+    const questionInfo = {
+      userId: this.props.user.uid,
+      questionId,
+      askedBy: this.state.question.askedBy,
+    };
     await this.props.upvoteQuestion(questionInfo);
   };
 
@@ -64,6 +74,7 @@ class Question extends Component {
     const questionInfo = {
       userId: this.props.user.uid,
       questionId,
+      askedBy: this.state.question.askedBy,
     };
     await this.props.downvoteQuestion(questionInfo);
   };
@@ -190,6 +201,7 @@ class Question extends Component {
                 this.handleAnswer(
                   this.props.user.uid,
                   this.state.question.id,
+                  this.state.question.askedBy,
                   this.state.answer,
                   this.props.user.language
                 )
