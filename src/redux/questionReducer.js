@@ -53,7 +53,15 @@ const answerQuestion = createAsyncThunk(
     user = user.data();
     answerInfo.name = user.firstName + " " + user.lastName;
     answerInfo.profileImage = user.photoURL;
+    //handle profile answer count
+    await db
+      .collection("Users")
+      .doc(userId)
+      .update({
+        answersCount: firebase.firestore.FieldValue.increment(1),
+      });
 
+    //Handle notification for answering question
     if (userId != askedBy) {
       const ref = db.collection("Notifications").doc();
       const notificationInfo = {

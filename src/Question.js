@@ -21,6 +21,7 @@ import {
   upvoteAnswer,
   downvoteAnswer,
 } from "./redux/questionReducer";
+import { incrementAnswerCount } from "./redux/questionsReducer";
 
 class Question extends Component {
   state = {
@@ -58,6 +59,7 @@ class Question extends Component {
         ...this.state,
         answer: "",
       });
+      this.props.incrementAnswerCount(questionId);
     }
   };
 
@@ -262,5 +264,6 @@ const actionCreators = {
   downvoteQuestion,
   upvoteAnswer,
   downvoteAnswer,
+  incrementAnswerCount,
 };
 export default connect(mapState, actionCreators)(Question);

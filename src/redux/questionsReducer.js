@@ -28,6 +28,15 @@ const askQuestion = createAsyncThunk(
     questionData.timestamp = new Date(
       firebase.firestore.Timestamp.now().seconds * 1000
     ).toLocaleDateString();
+
+    //handle profile question count
+    await db
+      .collection("Users")
+      .doc(userId)
+      .update({
+        questionsCount: firebase.firestore.FieldValue.increment(1),
+      });
+
     let user = await db.collection("Users").doc(userId).get();
     user = user.data();
     questionData.name = user.firstName + " " + user.lastName;
@@ -214,7 +223,17 @@ const initialState = {
 const questionsSlice = createSlice({
   name: "questions",
   initialState,
-  reducers: {},
+  reducers: {
+    incrementAnswerCount: (state, action) => {
+      state.questions.map((question) => {
+        if (question.id == action.payload) {
+          question.answers++;
+          return question;
+        }
+        return state;
+      });
+    },
+  },
   extraReducers: {
     [askQuestion.fulfilled]: (state, action) => {
       state.questions = [action.payload, ...state.questions];
@@ -254,6 +273,7 @@ const questionsSlice = createSlice({
   },
 });
 
+export const { incrementAnswerCount } = questionsSlice.actions;
 export {
   askQuestion,
   getQuestionsByLanguage,
