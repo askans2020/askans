@@ -79,13 +79,23 @@ class Question extends Component {
     await this.props.downvoteQuestion(questionInfo);
   };
 
-  handleAnswerUpvote = async (answerId) => {
-    const answerInfo = { userId: this.props.user.uid, answerId };
+  handleAnswerUpvote = async (answerId, answeredBy) => {
+    const answerInfo = {
+      userId: this.props.user.uid,
+      answerId,
+      questionId: this.props.question.id,
+      answeredBy,
+    };
     await this.props.upvoteAnswer(answerInfo);
   };
 
-  handleAnswerDownvote = async (answerId) => {
-    const answerInfo = { userId: this.props.user.uid, answerId };
+  handleAnswerDownvote = async (answerId, answeredBy) => {
+    const answerInfo = {
+      userId: this.props.user.uid,
+      answerId,
+      questionId: this.props.question.id,
+      answeredBy,
+    };
     await this.props.downvoteAnswer(answerInfo);
   };
 
@@ -146,8 +156,12 @@ class Question extends Component {
                 answer={answer.answer}
                 upvotes={answer.upvotes}
                 downvotes={answer.downvotes}
-                upvote={(answerId) => this.handleAnswerUpvote(answerId)}
-                downvote={(questionId) => this.handleAnswerDownvote(questionId)}
+                upvote={(answerId) =>
+                  this.handleAnswerUpvote(answerId, answer.answeredBy)
+                }
+                downvote={(questionId) =>
+                  this.handleAnswerDownvote(questionId, answer.answeredBy)
+                }
                 date={answer.date}
                 key={key}
                 upvoted={
