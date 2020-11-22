@@ -57,6 +57,8 @@ const userSlice = createSlice({
     [updateBio.fulfilled]: (state, action) => {
       state = action.payload;
       return state;
+
+      
     },
   },
 });

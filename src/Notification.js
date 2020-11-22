@@ -1,8 +1,13 @@
-import React from "react";
+import React, {Component} from "react";
 import { View, Text, ScrollView, StyleSheet } from "react-native";
 import { Header, Avatar } from "react-native-elements";
-const Notification = ({ navigation }) => {
-  return (
+import {connect} from "react-redux"
+import {getNotifications} from "./redux/notificationsReducer"
+class Notification extends Component{
+  componentDidMount = ()=>{
+    this.props.getNotifications(this.props.user.uid)
+  }
+  render () { return (
     <View style={{ flex: 1 }}>
       <Header
         centerComponent={{
@@ -54,7 +59,7 @@ const Notification = ({ navigation }) => {
         </View>
       </ScrollView>
     </View>
-  );
+  );}
 };
 
 const styles = StyleSheet.create({
@@ -77,4 +82,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-export default Notification;
+const mapState = state=>{
+  return{
+    notifications: state.notifications,
+    user: state.user
+  }
+}
+const actionCreators = {
+  getNotifications
+}
+export default connect(mapState, actionCreators)(Notification);
+
