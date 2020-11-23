@@ -10,7 +10,7 @@ import {
 import { Header, Avatar, Input, Button } from "react-native-elements";
 import DropDownPicker from "react-native-dropdown-picker";
 import { connect } from "react-redux";
-import { updateProfile, updateBio } from "./redux/userReducer";
+import { updateProfile, updateBio, setProfileBio } from "./redux/userReducer";
 
 class EditProfile extends Component {
   state = {
@@ -28,6 +28,7 @@ class EditProfile extends Component {
         bio,
       };
       await this.props.updateBio(userBio);
+      this.props.setProfileBio(bio);
     }
   };
 
@@ -255,5 +256,5 @@ const mapState = (state) => {
     user: state.user,
   };
 };
-const actionCreators = { updateProfile, updateBio };
+const actionCreators = { updateProfile, updateBio, setProfileBio };
 export default connect(mapState, actionCreators)(EditProfile);

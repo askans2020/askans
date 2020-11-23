@@ -9,8 +9,8 @@ import { setUser } from "./redux/userReducer";
 import { getCategories } from "./redux/categoriesReducer";
 import {
   getQuestionsByLanguage,
-  upvoteQuestion,
-  downvoteQuestion,
+  upvoteQuestionFromFeed,
+  downvoteQuestionFromFeed,
 } from "./redux/questionsReducer";
 import { connect } from "react-redux";
 
@@ -73,7 +73,7 @@ class Feed extends Component {
   };
   handleUpvote = async (questionId, askedBy) => {
     const questionInfo = { userId: this.props.user.uid, questionId, askedBy };
-    await this.props.upvoteQuestion(questionInfo);
+    await this.props.upvoteQuestionFromFeed(questionInfo);
   };
 
   handleDownvote = async (questionId, askedBy) => {
@@ -82,7 +82,7 @@ class Feed extends Component {
       questionId,
       askedBy,
     };
-    this.props.downvoteQuestion(questionInfo);
+    this.props.downvoteQuestionFromFeed(questionInfo);
   };
 
   getCategories = async () => {
@@ -174,8 +174,8 @@ const actionCreators = {
   setUser,
   getCategories,
   getQuestionsByLanguage,
-  upvoteQuestion,
-  downvoteQuestion,
+  upvoteQuestionFromFeed,
+  downvoteQuestionFromFeed,
 };
 
 export default connect(mapState, actionCreators)(Feed);

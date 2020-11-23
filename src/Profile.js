@@ -1,27 +1,48 @@
 import React, { Component } from "react";
 import { View, Text, ScrollView } from "react-native";
-import {
-  Header,
-  Icon,
-  Avatar,
-  Accessory,
-  Button,
-  ButtonGroup,
-} from "react-native-elements";
+import { Header, Icon, Avatar, ButtonGroup } from "react-native-elements";
 import QuestionCard from "./components/QuestionCard";
 import { connect } from "react-redux";
+import { getQuestionsByUserId } from "./redux/questionsReducer";
+import {
+  upvoteQuestionFromUserProfile,
+  downvoteQuestionFromUserProfile,
+} from "./redux/questionsReducer";
 
 class Profile extends Component {
   state = {
     profile: {},
+    questions: [],
   };
   handleGetProfile = () => {
     this.setState({
       profile: this.props.user,
     });
   };
-  componentDidMount = () => {
+  handleGetQuestionsByUserId = async () => {
+    await this.props.getQuestionsByUserId(this.props.user.uid);
+    this.setState({
+      ...this.state,
+      questions: this.props.questions,
+    });
+  };
+  handleUpvote = async (questionId, askedBy) => {
+    const questionInfo = { userId: this.props.user.uid, questionId, askedBy };
+    await this.props.upvoteQuestionFromUserProfile(questionInfo);
+  };
+
+  handleDownvote = async (questionId, askedBy) => {
+    const questionInfo = {
+      userId: this.props.user.uid,
+      questionId,
+      askedBy,
+    };
+    this.props.downvoteQuestionFromUserProfile(questionInfo);
+  };
+
+  componentDidMount = async () => {
     this.handleGetProfile();
+    await this.handleGetQuestionsByUserId();
   };
   render() {
     return (
@@ -71,7 +92,7 @@ class Profile extends Component {
                   fontSize: 16,
                 }}
               >
-                {this.state.profile.bio}
+                {this.props.user.bio}
               </Text>
             </View>
           </View>
@@ -84,16 +105,41 @@ class Profile extends Component {
           </View>
 
           <View style={{ padding: 5 }}>
-            <QuestionCard
-              name="Henok Tasissa"
-              profileImage="https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg"
-              title="Sample question"
-              question="What is blah blah?"
-              upvotes={14}
-              downvotes={12}
-              answers={44}
-              date={"12/12/1111"}
-            />
+            {this.props.questions
+              ? this.props.questions.map((question, key) => {
+                  return (
+                    <QuestionCard
+                      name={question.name}
+                      profileImage={question.profileImage}
+                      title={question.title}
+                      text={question.text}
+                      upvotes={question.upvotes}
+                      downvotes={question.downvotes}
+                      answers={question.answers}
+                      date={question.date}
+                      key={key}
+                      navigation={this.props.navigation}
+                      upvote={(questionId) =>
+                        this.handleUpvote(questionId, question.askedBy)
+                      }
+                      downvote={(questionId) =>
+                        this.handleDownvote(questionId, question.askedBy)
+                      }
+                      upvoted={
+                        question.upvotedBy.includes(this.props.user.uid)
+                          ? true
+                          : false
+                      }
+                      downvoted={
+                        question.downvotedBy.includes(this.props.user.uid)
+                          ? true
+                          : false
+                      }
+                      id={question.id}
+                    />
+                  );
+                })
+              : null}
           </View>
         </ScrollView>
       </View>
@@ -103,7 +149,12 @@ class Profile extends Component {
 const mapState = (state) => {
   return {
     user: state.user,
+    questions: state.questions.userQuestions,
   };
 };
-const actionCreators = {};
+const actionCreators = {
+  getQuestionsByUserId,
+  upvoteQuestionFromUserProfile,
+  downvoteQuestionFromUserProfile,
+};
 export default connect(mapState, actionCreators)(Profile);
