@@ -136,6 +136,8 @@ class Feed extends Component {
                 answers={question.answers}
                 date={question.date}
                 key={key}
+                askedBy={question.askedBy}
+                userId={this.props.user.uid}
                 navigation={this.props.navigation}
                 upvote={(questionId) =>
                   this.handleUpvote(questionId, question.askedBy)
