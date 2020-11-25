@@ -17,6 +17,8 @@ const QuestionCard = (props) => {
     downvote,
     upvoted,
     downvoted,
+    askedBy,
+    userId,
   } = props;
 
   return (
@@ -45,10 +47,23 @@ const QuestionCard = (props) => {
               uri: profileImage,
             }}
             size="medium"
+            onPress={() =>
+              userId == askedBy
+                ? navigation.navigate("Profile")
+                : navigation.navigate("UsersProfile", { userId: askedBy })
+            }
           />
         </View>
         <View style={{ flex: 1, padding: 10 }}>
-          <Text>{name}</Text>
+          <Text
+            onPress={() =>
+              userId == askedBy
+                ? navigation.navigate("Profile")
+                : navigation.navigate("UsersProfile", { userId: askedBy })
+            }
+          >
+            {name}
+          </Text>
         </View>
         <View style={{ padding: 10 }}>
           <Text>{date}</Text>

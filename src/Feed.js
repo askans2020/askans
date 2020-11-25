@@ -9,8 +9,8 @@ import { setUser } from "./redux/userReducer";
 import { getCategories } from "./redux/categoriesReducer";
 import {
   getQuestionsByLanguage,
-  upvoteQuestion,
-  downvoteQuestion,
+  upvoteQuestionFromFeed,
+  downvoteQuestionFromFeed,
 } from "./redux/questionsReducer";
 import { connect } from "react-redux";
 
@@ -71,17 +71,18 @@ class Feed extends Component {
       questions: this.props.questions,
     });
   };
-  handleUpvote = async (questionId) => {
-    const questionInfo = { userId: this.props.user.uid, questionId };
-    await this.props.upvoteQuestion(questionInfo);
+  handleUpvote = async (questionId, askedBy) => {
+    const questionInfo = { userId: this.props.user.uid, questionId, askedBy };
+    await this.props.upvoteQuestionFromFeed(questionInfo);
   };
 
-  handleDownvote = async (questionId) => {
+  handleDownvote = async (questionId, askedBy) => {
     const questionInfo = {
       userId: this.props.user.uid,
       questionId,
+      askedBy,
     };
-    this.props.downvoteQuestion(questionInfo);
+    this.props.downvoteQuestionFromFeed(questionInfo);
   };
 
   getCategories = async () => {
@@ -135,9 +136,15 @@ class Feed extends Component {
                 answers={question.answers}
                 date={question.date}
                 key={key}
+                askedBy={question.askedBy}
+                userId={this.props.user.uid}
                 navigation={this.props.navigation}
-                upvote={(questionId) => this.handleUpvote(questionId)}
-                downvote={(questionId) => this.handleDownvote(questionId)}
+                upvote={(questionId) =>
+                  this.handleUpvote(questionId, question.askedBy)
+                }
+                downvote={(questionId) =>
+                  this.handleDownvote(questionId, question.askedBy)
+                }
                 upvoted={
                   question.upvotedBy.includes(this.props.user.uid)
                     ? true
@@ -169,8 +176,8 @@ const actionCreators = {
   setUser,
   getCategories,
   getQuestionsByLanguage,
-  upvoteQuestion,
-  downvoteQuestion,
+  upvoteQuestionFromFeed,
+  downvoteQuestionFromFeed,
 };
 
 export default connect(mapState, actionCreators)(Feed);

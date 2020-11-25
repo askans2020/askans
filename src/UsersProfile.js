@@ -9,18 +9,24 @@ import {
   downvoteQuestionFromUserProfile,
 } from "./redux/questionsReducer";
 
-class Profile extends Component {
+import { getUserById } from "./redux/usersReducer";
+
+class UsersProfile extends Component {
   state = {
     profile: {},
     questions: [],
   };
-  handleGetProfile = () => {
+  handleGetProfile = async () => {
+    const { userId } = this.props.route.params;
+    const userInfo = { userId };
+    await this.props.getUserById(userInfo);
     this.setState({
-      profile: this.props.user,
+      ...this.state,
+      profile: this.props.users,
     });
   };
   handleGetQuestionsByUserId = async () => {
-    await this.props.getQuestionsByUserId(this.props.user.uid);
+    await this.props.getQuestionsByUserId(this.props.users.uid);
     this.setState({
       ...this.state,
       questions: this.props.questions,
@@ -41,7 +47,7 @@ class Profile extends Component {
   };
 
   componentDidMount = async () => {
-    this.handleGetProfile();
+    await this.handleGetProfile();
     await this.handleGetQuestionsByUserId();
   };
   render() {
@@ -52,24 +58,10 @@ class Profile extends Component {
         }}
       >
         <Header
-          leftComponent={
-            <Icon
-              name="power-off"
-              type="font-awesome"
-              onPress={() => firebase.auth().signOut()}
-            />
-          }
           centerComponent={{
             text: "AskAns",
             style: { color: "#000000", fontWeight: "800", fontSize: 25 },
           }}
-          rightComponent={
-            <Icon
-              name="user-edit"
-              type="font-awesome-5"
-              onPress={() => this.props.navigation.navigate("EditProfile")}
-            />
-          }
           containerStyle={{ backgroundColor: "#D3D3D3" }}
         />
         <ScrollView style={{ flex: 1 }}>
@@ -92,7 +84,7 @@ class Profile extends Component {
                   fontSize: 16,
                 }}
               >
-                {this.props.user.bio}
+                {this.state.profile.bio}
               </Text>
             </View>
           </View>
@@ -150,11 +142,14 @@ const mapState = (state) => {
   return {
     user: state.user,
     questions: state.questions.userQuestions,
+    users: state.users.user,
   };
 };
 const actionCreators = {
   getQuestionsByUserId,
   upvoteQuestionFromUserProfile,
   downvoteQuestionFromUserProfile,
+
+  getUserById,
 };
-export default connect(mapState, actionCreators)(Profile);
+export default connect(mapState, actionCreators)(UsersProfile);

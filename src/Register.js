@@ -65,7 +65,7 @@ const Register = ({ navigation }) => {
             firstName: firstName,
             lastName: lastName,
             photoURL:
-              "https://i.pinimg.com/originals/85/65/50/856550aa773911d00b76b24aaa4bc467.png",
+              "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png",
             email: user.email,
             age: "",
             gender: "",

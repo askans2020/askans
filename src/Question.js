@@ -21,6 +21,7 @@ import {
   upvoteAnswer,
   downvoteAnswer,
 } from "./redux/questionReducer";
+import { incrementAnswerCount } from "./redux/questionsReducer";
 
 class Question extends Component {
   state = {
@@ -44,19 +45,30 @@ class Question extends Component {
       answers: this.props.answers,
     });
   };
-  handleAnswer = async (userId, questionId, answer, language) => {
-    if (userId != "" && questionId != "" && answer != "" && language != "") {
-      const answerInfo = { userId, questionId, answer, language };
+  handleAnswer = async (userId, questionId, askedBy, answer, language) => {
+    if (
+      userId != "" &&
+      questionId != "" &&
+      askedBy != "" &&
+      answer != "" &&
+      language != ""
+    ) {
+      const answerInfo = { userId, questionId, askedBy, answer, language };
       await this.props.answerQuestion(answerInfo);
       this.setState({
         ...this.state,
         answer: "",
       });
+      this.props.incrementAnswerCount(questionId);
     }
   };
 
   handleQuestionUpvote = async (questionId) => {
-    const questionInfo = { userId: this.props.user.uid, questionId };
+    const questionInfo = {
+      userId: this.props.user.uid,
+      questionId,
+      askedBy: this.state.question.askedBy,
+    };
     await this.props.upvoteQuestion(questionInfo);
   };
 
@@ -64,17 +76,28 @@ class Question extends Component {
     const questionInfo = {
       userId: this.props.user.uid,
       questionId,
+      askedBy: this.state.question.askedBy,
     };
     await this.props.downvoteQuestion(questionInfo);
   };
 
-  handleAnswerUpvote = async (answerId) => {
-    const answerInfo = { userId: this.props.user.uid, answerId };
+  handleAnswerUpvote = async (answerId, answeredBy) => {
+    const answerInfo = {
+      userId: this.props.user.uid,
+      answerId,
+      questionId: this.props.question.id,
+      answeredBy,
+    };
     await this.props.upvoteAnswer(answerInfo);
   };
 
-  handleAnswerDownvote = async (answerId) => {
-    const answerInfo = { userId: this.props.user.uid, answerId };
+  handleAnswerDownvote = async (answerId, answeredBy) => {
+    const answerInfo = {
+      userId: this.props.user.uid,
+      answerId,
+      questionId: this.props.question.id,
+      answeredBy,
+    };
     await this.props.downvoteAnswer(answerInfo);
   };
 
@@ -109,6 +132,8 @@ class Question extends Component {
               answers={this.props.question.answers}
               date={this.props.question.date}
               navigation={this.props.navigation}
+              userId={this.props.user.uid}
+              askedBy={this.props.question.askedBy}
               upvote={(questionId) => this.handleQuestionUpvote(questionId)}
               downvote={(questionId) => this.handleQuestionDownvote(questionId)}
               upvoted={
@@ -135,8 +160,12 @@ class Question extends Component {
                 answer={answer.answer}
                 upvotes={answer.upvotes}
                 downvotes={answer.downvotes}
-                upvote={(answerId) => this.handleAnswerUpvote(answerId)}
-                downvote={(questionId) => this.handleAnswerDownvote(questionId)}
+                upvote={(answerId) =>
+                  this.handleAnswerUpvote(answerId, answer.answeredBy)
+                }
+                downvote={(questionId) =>
+                  this.handleAnswerDownvote(questionId, answer.answeredBy)
+                }
                 date={answer.date}
                 key={key}
                 upvoted={
@@ -149,6 +178,9 @@ class Question extends Component {
                 }
                 id={answer.id}
                 questionId={answer.questionId}
+                userId={this.props.user.uid}
+                answeredBy={answer.answeredBy}
+                navigation={this.props.navigation}
               />
             ))}
           </View>
@@ -190,6 +222,7 @@ class Question extends Component {
                 this.handleAnswer(
                   this.props.user.uid,
                   this.state.question.id,
+                  this.state.question.askedBy,
                   this.state.answer,
                   this.props.user.language
                 )
@@ -236,5 +269,6 @@ const actionCreators = {
   downvoteQuestion,
   upvoteAnswer,
   downvoteAnswer,
+  incrementAnswerCount,
 };
 export default connect(mapState, actionCreators)(Question);
