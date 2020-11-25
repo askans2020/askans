@@ -46,11 +46,23 @@ class Notification extends Component {
                       uri: notification.notifierInfo.profileImage,
                     }}
                     size="medium"
+                    onPress={() => {
+                      this.props.navigation.navigate("UsersProfile", {
+                        userId: notification.notifier,
+                      });
+                    }}
                   />
                 </View>
                 <View style={styles.textContainer}>
                   <Text>
-                    <Text style={{ fontWeight: "bold" }}>
+                    <Text
+                      style={{ fontWeight: "bold" }}
+                      onPress={() => {
+                        this.props.navigation.navigate("UsersProfile", {
+                          userId: notification.notifier,
+                        });
+                      }}
+                    >
                       {notification.notifierInfo.name}
                     </Text>
                     <Text
