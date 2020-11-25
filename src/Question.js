@@ -132,6 +132,8 @@ class Question extends Component {
               answers={this.props.question.answers}
               date={this.props.question.date}
               navigation={this.props.navigation}
+              userId={this.props.user.uid}
+              askedBy={this.props.question.askedBy}
               upvote={(questionId) => this.handleQuestionUpvote(questionId)}
               downvote={(questionId) => this.handleQuestionDownvote(questionId)}
               upvoted={
@@ -176,6 +178,9 @@ class Question extends Component {
                 }
                 id={answer.id}
                 questionId={answer.questionId}
+                userId={this.props.user.uid}
+                answeredBy={answer.answeredBy}
+                navigation={this.props.navigation}
               />
             ))}
           </View>

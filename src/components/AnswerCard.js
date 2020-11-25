@@ -14,7 +14,10 @@ const AnswerCard = (props) => {
     upvoted,
     downvoted,
     upvote,
+    userId,
+    answeredBy,
     id,
+    navigation,
   } = props;
 
   return (
@@ -26,6 +29,11 @@ const AnswerCard = (props) => {
             uri: profileImage,
           }}
           size="medium"
+          onPress={() => {
+            userId == answeredBy
+              ? navigation.navigate("Profile")
+              : navigation.navigate("UsersProfile", { userId: answeredBy });
+          }}
         />
       </View>
       <View
@@ -48,7 +56,16 @@ const AnswerCard = (props) => {
           }}
         >
           <View style={{ flex: 1, padding: 5 }}>
-            <Text style={{ fontWeight: "bold" }}>{name}</Text>
+            <Text
+              style={{ fontWeight: "bold" }}
+              onPress={() => {
+                userId == answeredBy
+                  ? navigation.navigate("Profile")
+                  : navigation.navigate("UsersProfile", { userId: answeredBy });
+              }}
+            >
+              {name}
+            </Text>
           </View>
           <View style={{ padding: 5 }}>
             <Text>{date}</Text>

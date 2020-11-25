@@ -48,14 +48,18 @@ const QuestionCard = (props) => {
             }}
             size="medium"
             onPress={() =>
-              navigation.navigate("UsersProfile", { userId: askedBy })
+              userId == askedBy
+                ? navigation.navigate("Profile")
+                : navigation.navigate("UsersProfile", { userId: askedBy })
             }
           />
         </View>
         <View style={{ flex: 1, padding: 10 }}>
           <Text
             onPress={() =>
-              navigation.navigate("UsersProfile", { userId: askedBy })
+              userId == askedBy
+                ? navigation.navigate("Profile")
+                : navigation.navigate("UsersProfile", { userId: askedBy })
             }
           >
             {name}
