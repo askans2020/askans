@@ -21,10 +21,20 @@ const HorizontalTopics = (props) => {
             title={topic.name}
             type="solid"
             containerStyle={{ margin: 5 }}
-            buttonStyle={{ backgroundColor: "#D3D3D3" }}
+            buttonStyle={
+              props.selectedCategory != "" &&
+              props.selectedCategory == topic.name
+                ? { backgroundColor: "#add8e6" }
+                : { backgroundColor: "#D3D3D3" }
+            }
             titleStyle={{ color: "black" }}
             key={key}
             size="small"
+            onPress={() => {
+              props.selectedCategory == topic.name
+                ? props.unselectCategory()
+                : props.onChangeCategory(topic.name);
+            }}
           />
         ))}
       </ScrollView>
