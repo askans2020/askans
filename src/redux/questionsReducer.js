@@ -72,7 +72,32 @@ const getQuestionsByLanguage = createAsyncThunk(
     return asked_questions;
   }
 );
+const getQuestionsByCategories = createAsyncThunk(
+  "questions/getQuestionsByCategories",
+  async (category) => {
+    const questions = await db
+      .collection("Questions")
+      .where("category", "==", category)
+      .get();
+    let asked_questions = [];
+    questions.forEach((question) => {
+      question = question.data();
+      question.timestamp = new Date(
+        question.timestamp.toDate()
+      ).toLocaleDateString();
+      question.date = question.timestamp;
+      asked_questions.push(question);
+    });
 
+    for (let question of asked_questions) {
+      let user = await db.collection("Users").doc(question.askedBy).get();
+      user = user.data();
+      question.name = user.firstName + " " + user.lastName;
+      question.profileImage = user.photoURL;
+    }
+    return asked_questions;
+  }
+);
 const getQuestionsByUserId = createAsyncThunk(
   "questions/getQuestionsByUserId",
   async (userId) => {
@@ -284,12 +309,16 @@ const questionsSlice = createSlice({
     [askQuestion.fulfilled]: (state, action) => {
       state.questions = [action.payload, ...state.questions];
       console.log("Question Asked");
-      //TODO: Push the new question asked
       return state;
     },
     [getQuestionsByLanguage.fulfilled]: (state, action) => {
       state.questions = action.payload;
       console.log("Question fetched");
+      return state;
+    },
+    [getQuestionsByCategories.fulfilled]: (state, action) => {
+      state.questions = action.payload;
+      console.log("Question fetched from categories");
       return state;
     },
     [upvoteQuestionFromFeed.fulfilled]: (state, action) => {
@@ -351,6 +380,7 @@ export const { incrementAnswerCount } = questionsSlice.actions;
 export {
   askQuestion,
   getQuestionsByLanguage,
+  getQuestionsByCategories,
   upvoteQuestionFromFeed,
   downvoteQuestionFromFeed,
   getQuestionsByUserId,
