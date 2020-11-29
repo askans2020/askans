@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { db } from "../../firebaseConfig";
+import { db, storage } from "../../firebaseConfig";
+import uuid from "react-native-uuid";
 
 const setUser = createAsyncThunk("user/setUser", async (userId) => {
   let userData = {};
@@ -37,7 +38,39 @@ const updateBio = createAsyncThunk("user/updateBio", async (bioInfo) => {
   user = user.data();
   return user;
 });
+const uploadProfilePicture = createAsyncThunk(
+  "user/uploadProfilePicture",
+  async (info) => {
+    const { imageBlob, userId } = info;
+    let newImageName = uuid.v1();
+    console.log("newImageName");
+    let profileImageRef = await storage
+      .ref(`images/${newImageName}`)
+      .put(imageBlob);
 
+    const imageLink = await storage
+      .ref("images")
+      .child(newImageName)
+      .getDownloadURL();
+    await db.collection("Users").doc(userId).update({ photoURL: imageLink });
+    return imageLink;
+  }
+);
+// export const uploadProfilePicture = async (userId, imageBlob) => {
+//   let newImageName = " uuid.v1()";
+//   console.log(newImageName);
+//   let profileImageRef = await storage
+//     .ref(`images/${newImageName}`)
+//     .put(imageBlob);
+
+//   await storage
+//     .ref("images")
+//     .child(newImageName)
+//     .getDownloadURL()
+//     .then((url) => {
+//       db.collection("Users").doc(userId).update({ photoURL: url });
+//     });
+// };
 const initialState = {
   user: {},
   questions: [],
@@ -60,6 +93,11 @@ const userSlice = createSlice({
     },
     [updateProfile.fulfilled]: (state, action) => {
       state = action.payload;
+      console.log(state);
+      return state;
+    },
+    [uploadProfilePicture.fulfilled]: (state, action) => {
+      state.photoURL = action.payload;
       return state;
     },
     [updateBio.fulfilled]: (state, action) => {
@@ -70,5 +108,5 @@ const userSlice = createSlice({
 });
 
 export const { setProfileBio } = userSlice.actions;
-export { setUser, updateProfile, updateBio };
+export { setUser, updateProfile, updateBio, uploadProfilePicture };
 export default userSlice.reducer;

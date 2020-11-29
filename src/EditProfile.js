@@ -6,11 +6,26 @@ import {
   TextInput,
   StyleSheet,
   KeyboardAvoidingView,
+  Platform,
 } from "react-native";
-import { Header, Avatar, Input, Button } from "react-native-elements";
+import {
+  Header,
+  Avatar,
+  Input,
+  Button,
+  Accessory,
+} from "react-native-elements";
+import Constants from "expo-constants";
+import * as Permissions from "expo-permissions";
+import * as ImagePicker from "expo-image-picker";
 import DropDownPicker from "react-native-dropdown-picker";
 import { connect } from "react-redux";
-import { updateProfile, updateBio, setProfileBio } from "./redux/userReducer";
+import {
+  updateProfile,
+  updateBio,
+  setProfileBio,
+  uploadProfilePicture,
+} from "./redux/userReducer";
 
 class EditProfile extends Component {
   state = {
@@ -49,10 +64,61 @@ class EditProfile extends Component {
       ...this.props.user,
     });
   };
+  getPermissionAsync = async () => {
+    if (Constants.platform.ios) {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== "granted") {
+        //alert("Sorry, we need camera roll permissions to make this work!");
+      }
+    }
+  };
+
   componentDidMount = () => {
     this.handleFillInformation();
   };
 
+  _pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.6,
+      });
+
+      if (!result.cancelled) {
+        const allowedImageFormats = [
+          "jpg",
+          "jpeg",
+          "png",
+          "image/png",
+          "image/jpg",
+          "image/jpeg",
+        ];
+        const { uri } = result;
+        let imageType = uri.split(".");
+        imageType = imageType[imageType.length - 1];
+        imageType = imageType.toLowerCase();
+
+        let imageBlob = await (await fetch(uri)).blob();
+        if (Platform.OS == "web") {
+          imageType = imageBlob.type;
+        }
+        if (allowedImageFormats.includes(imageType)) {
+          // console.log("imageBlob");
+          const info = {
+            userId: this.props.user.uid,
+            imageBlob: imageBlob,
+          };
+          await this.props.uploadProfilePicture(info);
+        } else {
+          console.log(124, imageBlob);
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -84,10 +150,19 @@ class EditProfile extends Component {
                 <Avatar
                   rounded
                   source={{
-                    uri: this.state.photoURL ? this.state.photoURL : null,
+                    uri: this.props.user.photoURL
+                      ? this.props.user.photoURL
+                      : null,
                   }}
                   size="medium"
-                />
+                >
+                  <Accessory
+                    style={{ width: 15, height: 15, borderRadius: 50 }}
+                    onPress={async () => {
+                      this._pickImage();
+                    }}
+                  />
+                </Avatar>
               </View>
               <View style={{ flex: 1, padding: 10 }}>
                 <Text>{this.state.firstName + " " + this.state.lastName}</Text>
@@ -256,5 +331,10 @@ const mapState = (state) => {
     user: state.user,
   };
 };
-const actionCreators = { updateProfile, updateBio, setProfileBio };
+const actionCreators = {
+  updateProfile,
+  updateBio,
+  setProfileBio,
+  uploadProfilePicture,
+};
 export default connect(mapState, actionCreators)(EditProfile);

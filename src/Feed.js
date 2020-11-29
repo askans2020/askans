@@ -106,7 +106,11 @@ class Feed extends Component {
             return (
               <QuestionCard
                 name={question.name}
-                profileImage={question.profileImage}
+                profileImage={
+                  question.askedBy == this.props.user.uid
+                    ? this.props.user.photoURL
+                    : question.profileImage
+                }
                 title={question.title}
                 text={question.text}
                 upvotes={question.upvotes}
