@@ -120,18 +120,21 @@ class Ask extends Component {
                       <Avatar
                         rounded
                         source={{
-                          uri:
-                            "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg",
+                          uri: this.props.user.photoURL,
                         }}
                         size="medium"
                       />
                     </View>
                     <View style={{ flex: 1, padding: 10 }}>
-                      <Text>Marry Joe</Text>
+                      <Text>
+                        {this.props.user.firstName +
+                          " " +
+                          this.props.user.lastName}
+                      </Text>
                     </View>
-                    <View style={{ padding: 10 }}>
+                    {/* <View style={{ padding: 10 }}>
                       <Text>00/00/0000</Text>
-                    </View>
+                    </View> */}
                   </View>
                 </View>
                 <View style={{ margin: 5 }}>
@@ -172,15 +175,14 @@ class Ask extends Component {
                 <View>
                   <View style={styles.dropdown}>
                     <DropDownPicker
-                      style={{}}
                       items={this.state.categories}
                       //defaultValue={this.state.any}
-                      style={{ backgroundColor: "#fafafa" }}
+                      style={{ backgroundColor: "#fafafa", zIndex: 200 }}
                       itemStyle={{
                         justifyContent: "flex-start",
                       }}
                       dropDownStyle={{ backgroundColor: "#fafafa" }}
-                      onChangeItem={(item) =>
+                      onChangeItem={(item) => {
                         this.setState({
                           ...this.state,
                           question: {
@@ -188,8 +190,8 @@ class Ask extends Component {
                             category: item.value,
                           },
                           selectedCategory: item.value,
-                        })
-                      }
+                        });
+                      }}
                       defaultValue={this.state.selectedCategory}
                       placeholder="Select Category"
                     />
