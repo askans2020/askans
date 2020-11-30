@@ -147,6 +147,7 @@ class Question extends Component {
                   : false
               }
               id={this.props.question.id}
+              imageLink={this.props.question.imageLink}
             />
           ) : null}
           <View style={{ margin: 10 }}>

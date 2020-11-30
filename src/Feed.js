@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { View, Text } from "react-native";
-import { Header, Avatar, Icon, Button } from "react-native-elements";
+import { Header, Avatar, Icon, Button, Image } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 import HorizontalTopics from "./components/HorizontalTopics";
 import QuestionCard from "./components/QuestionCard";
@@ -138,6 +138,8 @@ class Feed extends Component {
                     : false
                 }
                 id={question.id}
+                imageLink={question.imageLink}
+                readMore={true}
               />
             );
           })}

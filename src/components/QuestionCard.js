@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { Avatar, Icon } from "react-native-elements";
+import { Avatar, Icon, Image } from "react-native-elements";
 const QuestionCard = (props) => {
   const {
     id,
@@ -19,6 +19,8 @@ const QuestionCard = (props) => {
     downvoted,
     askedBy,
     userId,
+    imageLink,
+    readMore,
   } = props;
 
   return (
@@ -76,7 +78,22 @@ const QuestionCard = (props) => {
         <Text style={{ fontWeight: "600", marginBottom: 8, fontSize: 18 }}>
           {title}
         </Text>
-        <Text>{text}</Text>
+        <Text>
+          {readMore && text.length > 250 ? text.substring(0, 250) : text}
+          {readMore && text.length > 250 ? (
+            <Text style={{ color: "darkblue", fontWeight: "500" }}>
+              {" "}
+              ... [Read More]
+            </Text>
+          ) : null}
+        </Text>
+        {imageLink ? (
+          <Image
+            source={{ uri: imageLink }}
+            style={{ width: "100%", height: 250 }}
+            resizeMode="contain"
+          />
+        ) : null}
       </TouchableOpacity>
       <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }}>
         <View style={{ paddingLeft: 5, flexDirection: "row" }}>

@@ -136,6 +136,8 @@ class Profile extends Component {
                           : false
                       }
                       id={question.id}
+                      imageLink={question.imageLink}
+                      readMore={true}
                     />
                   );
                 })

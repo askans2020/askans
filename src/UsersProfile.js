@@ -127,7 +127,9 @@ class UsersProfile extends Component {
                           ? true
                           : false
                       }
+                      imageLink={question.imageLink}
                       id={question.id}
+                      readMore={true}
                     />
                   );
                 })
