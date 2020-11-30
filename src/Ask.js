@@ -195,7 +195,7 @@ class Ask extends Component {
                     />
                   </View>
                   <Button
-                    style={{ marginTop: 20, marginHorizontal: 10 }}
+                    containerStyle={{ marginTop: 20, marginHorizontal: 10 }}
                     title="Ask"
                     onPress={() => {
                       this.handleAsk(

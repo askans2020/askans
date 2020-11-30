@@ -78,7 +78,7 @@ class Profile extends Component {
               <Avatar
                 rounded
                 size="large"
-                source={{ uri: this.state.profile.photoURL }}
+                source={{ uri: this.props.user.photoURL }}
               />
               <Text style={{ marginLeft: 20, fontSize: 22, fontWeight: "500" }}>
                 {this.state.profile.firstName +

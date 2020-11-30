@@ -9,6 +9,7 @@ import { setUser } from "./redux/userReducer";
 import { getCategories } from "./redux/categoriesReducer";
 import {
   getQuestionsByLanguage,
+  getQuestionsByCategories,
   upvoteQuestionFromFeed,
   downvoteQuestionFromFeed,
 } from "./redux/questionsReducer";
@@ -16,51 +17,9 @@ import { connect } from "react-redux";
 
 class Feed extends Component {
   state = {
-    questions: [
-      {
-        id: 1,
-        name: "John Doe",
-        date: "MM/DD/YYYY",
-        profileImage:
-          "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
-        title: "Post according to an editorial calendar?",
-        text:
-          "Instagram was designed as an app to create content via a mobile device. As a result, it is only practical to use one of the various scheduling tools available, so that you can post systematically. By the help of using an editorial calendar, you are able to schedule regular posts in advance, to keep your followers engaged.",
-        upvotes: 123,
-        downvotes: 10,
-        answers: 24,
-        upvoted: false,
-      },
-      {
-        id: 2,
-        name: "Hiwot Doe",
-        date: "MM/DD/YYYY",
-        profileImage:
-          "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
-        title: "Post according to an editorial calendar?",
-        text:
-          "Instagram was designed as an app to create content via a mobile device. As a result, it is only practical to use one of the various scheduling tools available, so that you can post systematically. By the help of using an editorial calendar, you are able to schedule regular posts in advance, to keep your followers engaged.",
-        upvotes: 432,
-        downvotes: 12,
-        answers: 58,
-        upvoted: false,
-      },
-      {
-        id: 3,
-        name: "Henok Doe",
-        date: "MM/DD/YYYY",
-        profileImage:
-          "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg",
-        title: "Post according to an editorial?",
-        text:
-          "Instagram was designed as an app to create content via a mobile device. As a result, it is only practical to use one of the various scheduling tools available, so that you can post systematically. By the help of using an editorial calendar, you are able to schedule regular posts in advance, to keep your followers engaged.",
-        upvotes: 432,
-        downvotes: 12,
-        answers: 58,
-        upvoted: false,
-      },
-    ],
+    questions: [],
     topics: [],
+    selectedCategory: "",
   };
 
   fetchQuestionsByLanguage = async () => {
@@ -69,6 +28,7 @@ class Feed extends Component {
     this.setState({
       ...this.state,
       questions: this.props.questions,
+      selectedCategory: "",
     });
   };
   handleUpvote = async (questionId, askedBy) => {
@@ -102,6 +62,17 @@ class Feed extends Component {
     await this.fetchQuestionsByLanguage();
   };
 
+  handleChangeByCategories = async (category) => {
+    await this.props.getQuestionsByCategories(category);
+    this.setState({
+      ...this.state,
+      questions: this.props.questions,
+      selectedCategory: category,
+    });
+  };
+  handleUnselectCategory = async () => {
+    await this.fetchQuestionsByLanguage();
+  };
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -121,14 +92,25 @@ class Feed extends Component {
           style={{ flex: 1, padding: 5, paddingTop: 10, paddingBottom: 60 }}
         >
           {this.props.categories ? (
-            <HorizontalTopics topics={this.props.categories.categories} />
+            <HorizontalTopics
+              topics={this.props.categories.categories}
+              onChangeCategory={(category) =>
+                this.handleChangeByCategories(category)
+              }
+              selectedCategory={this.state.selectedCategory}
+              unselectCategory={() => this.handleUnselectCategory()}
+            />
           ) : null}
 
           {this.props.questions.map((question, key) => {
             return (
               <QuestionCard
                 name={question.name}
-                profileImage={question.profileImage}
+                profileImage={
+                  question.askedBy == this.props.user.uid
+                    ? this.props.user.photoURL
+                    : question.profileImage
+                }
                 title={question.title}
                 text={question.text}
                 upvotes={question.upvotes}
@@ -176,6 +158,7 @@ const actionCreators = {
   setUser,
   getCategories,
   getQuestionsByLanguage,
+  getQuestionsByCategories,
   upvoteQuestionFromFeed,
   downvoteQuestionFromFeed,
 };
