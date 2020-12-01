@@ -123,6 +123,7 @@ class Ask extends Component {
     this.getCategories();
   };
   render() {
+    const { app } = this.props;
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -151,7 +152,7 @@ class Ask extends Component {
                       fontSize: 20,
                     }}
                   >
-                    Ask Question
+                    {app.askQuestion}
                   </Text>
                 </View>
                 <View>
@@ -187,7 +188,7 @@ class Ask extends Component {
                 <View style={{ margin: 5 }}>
                   <TextInput
                     style={styles.titleinput}
-                    placeholder="Add question title."
+                    placeholder={app.addQuestionTitle}
                     multiline={true}
                     onChangeText={(text) =>
                       this.setState({
@@ -205,7 +206,7 @@ class Ask extends Component {
                 <View style={{ margin: 5, marginTop: 5 }}>
                   <TextInput
                     style={styles.detailinput}
-                    placeholder="Add more details for your question."
+                    placeholder={app.addQuestionDetail}
                     multiline={true}
                     onChangeText={(text) =>
                       this.setState({
@@ -234,8 +235,8 @@ class Ask extends Component {
                     buttonStyle={{ backgroundColor: "#D3D3D3", padding: 12 }}
                     title={
                       this.state.question.imageBlob
-                        ? "Image Attached (Click to remove)"
-                        : "Attach an image"
+                        ? app.removeImage
+                        : app.attachImage
                     }
                     titleStyle={{ color: "black", fontSize: 14 }}
                     onPress={() => {
@@ -250,32 +251,35 @@ class Ask extends Component {
                 </View>
 
                 <View>
-                  <View style={styles.dropdown}>
-                    <DropDownPicker
-                      items={this.state.categories}
-                      //defaultValue={this.state.any}
-                      style={{ backgroundColor: "#fafafa", zIndex: 200 }}
-                      itemStyle={{
-                        justifyContent: "flex-start",
-                      }}
-                      dropDownStyle={{ backgroundColor: "#fafafa" }}
-                      onChangeItem={(item) => {
-                        this.setState({
-                          ...this.state,
-                          question: {
-                            ...this.state.question,
-                            category: item.value,
-                          },
-                          selectedCategory: item.value,
-                        });
-                      }}
-                      defaultValue={this.state.selectedCategory}
-                      placeholder="Select Category"
-                    />
-                  </View>
+                  <DropDownPicker
+                    items={this.state.categories}
+                    //defaultValue={this.state.any}
+                    style={{
+                      backgroundColor: "#fafafa",
+                      marginHorizontal: 10,
+                      marginTop: 10,
+                    }}
+                    itemStyle={{
+                      justifyContent: "flex-start",
+                    }}
+                    dropDownStyle={{ backgroundColor: "#fafafa" }}
+                    onChangeItem={(item) => {
+                      this.setState({
+                        ...this.state,
+                        question: {
+                          ...this.state.question,
+                          category: item.value,
+                        },
+                        selectedCategory: item.value,
+                      });
+                    }}
+                    defaultValue={this.state.selectedCategory}
+                    placeholder={app.selectCategory}
+                  />
+
                   <Button
                     containerStyle={{ marginTop: 20, marginHorizontal: 10 }}
-                    title="Ask"
+                    title={app.ask}
                     onPress={() => {
                       this.handleAsk(
                         this.state.question.title,
@@ -338,6 +342,7 @@ const mapState = (state) => {
     categories: state.categories,
     questions: state.questions,
     user: state.user,
+    app: state.app.app,
   };
 };
 const actionCreators = {

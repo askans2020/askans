@@ -22,6 +22,7 @@ class Notification extends Component {
     await this.handleGetNotifications();
   };
   render() {
+    const { app } = this.props;
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -72,7 +73,7 @@ class Notification extends Component {
                         })
                       }
                     >
-                      {" " + notification.message}
+                      {" " + app[notification.type]}
                     </Text>
                   </Text>
                 </View>
@@ -109,6 +110,7 @@ const mapState = (state) => {
   return {
     notifications: state.notifications,
     user: state.user,
+    app: state.app.app,
   };
 };
 const actionCreators = {

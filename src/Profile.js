@@ -8,6 +8,7 @@ import {
   upvoteQuestionFromUserProfile,
   downvoteQuestionFromUserProfile,
 } from "./redux/questionsReducer";
+import firebase from "../firebaseConfig";
 
 class Profile extends Component {
   state = {
@@ -27,7 +28,8 @@ class Profile extends Component {
     });
   };
   handleUpvote = async (questionId, askedBy) => {
-    const questionInfo = { userId: this.props.user.uid, questionId, askedBy };
+    let userId = this.props.user.uid;
+    const questionInfo = { userId, questionId, askedBy };
     await this.props.upvoteQuestionFromUserProfile(questionInfo);
   };
 

@@ -154,6 +154,7 @@ const mapState = (state) => {
     user: state.user,
     categories: state.categories,
     questions: state.questions.questions,
+    app: state.app.app,
   };
 };
 const actionCreators = {

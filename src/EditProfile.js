@@ -120,6 +120,7 @@ class EditProfile extends Component {
     }
   };
   render() {
+    const { app } = this.props;
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -173,7 +174,7 @@ class EditProfile extends Component {
                 style={styles.detailinput}
                 multiline={true}
                 style={[styles.inputContainer, { minHeight: 150 }]}
-                placeholder="Update bio..."
+                placeholder={app.updateBio}
                 onChangeText={(text) => {
                   this.setState({
                     ...this.state,
@@ -184,7 +185,7 @@ class EditProfile extends Component {
               />
               <Button
                 style={{ marginLeft: 200 }}
-                title="Update bio"
+                title={app.updateBioButton}
                 onPress={() => {
                   this.handleUpdateBio(this.state.bio);
                 }}
@@ -198,7 +199,7 @@ class EditProfile extends Component {
             >
               <TextInput
                 style={styles.inputContainer}
-                placeholder="First Name"
+                placeholder={app.firstName}
                 onChangeText={(text) => {
                   this.setState({
                     ...this.state,
@@ -209,7 +210,7 @@ class EditProfile extends Component {
               />
               <TextInput
                 style={styles.inputContainer}
-                placeholder="Last Name"
+                placeholder={app.lastName}
                 onChangeText={(text) => {
                   this.setState({
                     ...this.state,
@@ -245,7 +246,7 @@ class EditProfile extends Component {
                       language: item.value,
                     });
                   }}
-                  placeholder="Language"
+                  placeholder={app.languageName}
                 />
               </View>
               <View style={[styles.dropdown, { zIndex: 90 }]}>
@@ -253,12 +254,12 @@ class EditProfile extends Component {
                   style={{ marginTop: 50 }}
                   items={[
                     {
-                      label: "FEMALE",
+                      label: app["FEMALE"],
                       value: "Female",
                       hidden: true,
                     },
                     {
-                      label: "MALE",
+                      label: app["MALE"],
                       value: "Male",
                     },
                   ]}
@@ -276,13 +277,13 @@ class EditProfile extends Component {
                     })
                   }
                   defaultValue={this.state.gender}
-                  placeholder="Gender"
+                  placeholder={app.gender}
                 />
               </View>
 
               <Button
                 style={{ marginTop: 20, marginHorizontal: 10 }}
-                title="Update info"
+                title={app.updateInfo}
                 onPress={() => {
                   this.handleUpdateProfile(
                     this.state.firstName,
@@ -329,6 +330,7 @@ const styles = StyleSheet.create({
 const mapState = (state) => {
   return {
     user: state.user,
+    app: state.app.app,
   };
 };
 const actionCreators = {

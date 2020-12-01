@@ -5,6 +5,7 @@ import questionsReducer from "./questionsReducer";
 import questionReducer from "./questionReducer";
 import notificationsReducer from "./notificationsReducer";
 import usersReducer from "./usersReducer";
+import appReducer from "./appReducer";
 const rootReducer = combineReducers({
   user: userReducer,
   categories: categoriesReducer,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   question: questionReducer,
   notifications: notificationsReducer,
   users: usersReducer,
+  app: appReducer,
 });
 
 export default rootReducer;

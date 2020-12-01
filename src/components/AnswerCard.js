@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Avatar, Icon } from "react-native-elements";
-
+import { connect } from "react-redux";
 const AnswerCard = (props) => {
   const {
     name,
@@ -18,6 +18,7 @@ const AnswerCard = (props) => {
     answeredBy,
     id,
     navigation,
+    app,
   } = props;
 
   return (
@@ -85,7 +86,7 @@ const AnswerCard = (props) => {
               iconStyle={upvoted ? { color: "blue" } : { color: "black" }}
             />
             <Text style={{ paddingTop: 5, paddingLeft: 5 }}>
-              {upvotes} upvotes
+              {upvotes} {app.upvotes}
             </Text>
           </View>
           <View style={{ paddingLeft: 15, flexDirection: "row", flex: 1 }}>
@@ -96,7 +97,7 @@ const AnswerCard = (props) => {
               iconStyle={downvoted ? { color: "blue" } : { color: "black" }}
             />
             <Text style={{ paddingTop: 5, paddingLeft: 5 }}>
-              {downvotes} downvotes
+              {downvotes} {app.downvotes}
             </Text>
           </View>
         </View>
@@ -105,4 +106,9 @@ const AnswerCard = (props) => {
   );
 };
 
-export default AnswerCard;
+const mapState = (state) => {
+  return {
+    app: state.app.app,
+  };
+};
+export default connect(mapState)(AnswerCard);
