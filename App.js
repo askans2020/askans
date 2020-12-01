@@ -102,6 +102,7 @@ const HomeTabs = () => {
 };
 
 let persistor = persistStore(store);
+//persistor.purge();
 const App = () => {
   return (
     <Provider store={store}>

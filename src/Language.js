@@ -70,6 +70,7 @@ class Language extends Component {
           onChangeItem={(item) => {
             this.props.setAppLanguage(item.value);
             this.setState({ language: item.value });
+            console.log(item.value);
           }}
           placeholder={app.selectLanguage}
         />

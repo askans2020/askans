@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 const initialState = {
   selectedLanguage: "",
   app: {},
-  language: [
+  languages: [
     {
       language: "English",
       selectLanguage: "Select Language",
@@ -86,6 +86,47 @@ const initialState = {
       answersTitle: "መልሶች",
       answerPlaceHolder: "መልስ...",
     },
+    {
+      language: "Spanish",
+      selectLanguage: "Seleccione el idioma",
+      next: "Próximo",
+      emailAddress: "Dirección de correo electrónico",
+      password: "Contraseña",
+      signIn: "Registrarse",
+      dontHaveAnAccount: "No tienes una cuenta?",
+      signUpHere: "Registrate aquí",
+      checkPassOrEmail: "Verifique su contraseña o correo electrónico",
+      firstName: "Nombre de pila",
+      lastName: "Apellido",
+      signUp: "Regístrate",
+      haveAcnt: "Ya tienes una cuenta?",
+      signUpErr: "Asegúrese de completar todos los campos obligatorios",
+      signInHere: "Firme aquí",
+      upvotes: "votos a favor",
+      downvotes: "votos negativos",
+      answers: "respuestas",
+      askQuestion: "Pregunta",
+      addQuestionTitle: "Agregar título de pregunta",
+      addQuestionDetail: "Agregue más detalles para su pregunta",
+      attachImage: "Adjuntar una imagen",
+      removeImage: "Imagen adjunta (haga clic para eliminar)",
+      selectCategory: "selecciona una categoría",
+      ask: "Pedir",
+      ANSWER_QUESTION: "respondió tu pregunta.",
+      UPVOTE_QUESTION: "votó a favor de su pregunta.",
+      DOWNVOTE_QUESTION: "votó en contra de su pregunta.",
+      DOWNVOTE_ANSWER: "votó en contra de su respuesta.",
+      UPVOTE_ANSWER: "votó a favor de su respuesta.",
+      updateBio: "Actualizar biografía...",
+      updateBioButton: "Actualizar biografía",
+      languageName: "Idioma",
+      MALE: "HOMBRE",
+      FEMALE: "HEMBRA",
+      gender: "Género",
+      updateInfo: "Actualizar información",
+      answersTitle: "Respuestas",
+      answerPlaceHolder: "Responder...",
+    },
   ],
 };
 
@@ -94,11 +135,14 @@ const appSlice = createSlice({
   initialState,
   reducers: {
     setAppLanguage: (state, action) => {
-      state.language.map((language) => {
+      console.log(state);
+      state.languages.map((language) => {
         if (language.language == action.payload) {
           state.app = language;
+          console.log(state.app);
           state.selectedLanguage = language.language;
         }
+        return language;
       });
       return state;
     },
