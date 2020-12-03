@@ -51,6 +51,10 @@ class Language extends Component {
               value: "Amharic",
             },
             {
+              label: "OROMIFFA",
+              value: "Oromiffa",
+            },
+            {
               label: "SPANISH",
               value: "Spanish",
             },
