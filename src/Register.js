@@ -140,6 +140,10 @@ const Register = ({ navigation, app }) => {
                 value: "Amharic",
               },
               {
+                label: "OROMIFFA",
+                value: "Oromiffa",
+              },
+              {
                 label: "SPANISH",
                 value: "Spanish",
               },
