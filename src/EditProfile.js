@@ -229,8 +229,16 @@ class EditProfile extends Component {
                       hidden: true,
                     },
                     {
+                      label: "OROMIFFA",
+                      value: "Oromiffa",
+                    },
+                    {
                       label: "ENGLISH",
                       value: "English",
+                    },
+                    {
+                      label: "SPANISH",
+                      value: "Spanish",
                     },
                   ]}
                   defaultValue={this.state.language}

@@ -13,7 +13,7 @@ class Language extends Component {
     if (this.props.selectedLanguage != "") {
       let language = this.props.selectedLanguage;
       console.log(language);
-      //this.props.setAppLanguage(language);
+      this.props.setAppLanguage(language);
     } else {
       this.props.setAppLanguage("English");
     }
