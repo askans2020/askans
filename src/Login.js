@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { connect } from "react-redux";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Input, Button } from "react-native-elements";
 import firebase from "../firebaseConfig";
@@ -57,6 +58,7 @@ class Login extends Component {
   };
 
   render() {
+    const { app } = this.props;
     return (
       <KeyboardAvoidingView
         style={styles.container}
@@ -72,32 +74,32 @@ class Login extends Component {
                   fontWeight: "bold",
                 }}
               >
-                {this.state.error.message}
+                {app.checkPassOrEmail}
               </Text>
             ) : null}
             <Input
-              placeholder="Email Address"
+              placeholder={app.emailAddress}
               leftIcon={<Icon name="envelope" size={24} color="black" />}
               onChangeText={(text) => this.setState({ email: text })}
               value={this.state.email}
             />
             <Input
-              placeholder="Password"
+              placeholder={app.password}
               leftIcon={<Icon name="key" size={24} color="black" />}
               secureTextEntry={true}
               onChangeText={(text) => this.setState({ password: text })}
               value={this.state.password}
             />
             <Button
-              title="Sign In"
+              title={app.signIn}
               style={styles.loginButton}
               onPress={() =>
                 this.signInUser(this.state.email, this.state.password)
               }
             />
-            <Text style={styles.question}>You don't have an account?</Text>
+            <Text style={styles.question}>{app.dontHaveAnAccount}</Text>
             <Button
-              title="Sign Up Here"
+              title={app.signUpHere}
               style={styles.loginButton}
               type="outline"
               onPress={() => this.props.navigation.navigate("Register")}
@@ -128,4 +130,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+const mapState = (state) => {
+  return {
+    app: state.app.app,
+  };
+};
+export default connect(mapState)(Login);

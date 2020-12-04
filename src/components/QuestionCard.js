@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { Avatar, Icon } from "react-native-elements";
+import { Avatar, Icon, Image } from "react-native-elements";
+import { connect } from "react-redux";
 const QuestionCard = (props) => {
   const {
     id,
@@ -19,6 +20,9 @@ const QuestionCard = (props) => {
     downvoted,
     askedBy,
     userId,
+    imageLink,
+    readMore,
+    app,
   } = props;
 
   return (
@@ -76,7 +80,22 @@ const QuestionCard = (props) => {
         <Text style={{ fontWeight: "600", marginBottom: 8, fontSize: 18 }}>
           {title}
         </Text>
-        <Text>{text}</Text>
+        <Text>
+          {readMore && text.length > 250 ? text.substring(0, 250) : text}
+          {readMore && text.length > 250 ? (
+            <Text style={{ color: "darkblue", fontWeight: "500" }}>
+              {" "}
+              ... [Read More]
+            </Text>
+          ) : null}
+        </Text>
+        {imageLink ? (
+          <Image
+            source={{ uri: imageLink }}
+            style={{ width: "100%", height: 250 }}
+            resizeMode="contain"
+          />
+        ) : null}
       </TouchableOpacity>
       <View style={{ flexDirection: "row", padding: 5, alignItems: "center" }}>
         <View style={{ paddingLeft: 5, flexDirection: "row" }}>
@@ -87,7 +106,7 @@ const QuestionCard = (props) => {
             iconStyle={upvoted ? { color: "blue" } : { color: "black" }}
           />
           <Text style={{ paddingTop: 5, paddingLeft: 5 }}>
-            {upvotes} upvotes
+            {upvotes} {app.upvotes}
           </Text>
         </View>
         <View style={{ paddingLeft: 15, flexDirection: "row" }}>
@@ -98,7 +117,7 @@ const QuestionCard = (props) => {
             iconStyle={downvoted ? { color: "blue" } : { color: "black" }}
           />
           <Text style={{ paddingTop: 5, paddingLeft: 5 }}>
-            {downvotes} downvotes
+            {downvotes} {app.downvotes}
           </Text>
         </View>
         <View
@@ -113,7 +132,7 @@ const QuestionCard = (props) => {
               textAlign: "center",
             }}
           >
-            {answers} Answers
+            {answers} {app.answers}
           </Text>
         </View>
       </View>
@@ -121,4 +140,9 @@ const QuestionCard = (props) => {
   );
 };
 
-export default QuestionCard;
+const mapState = (state) => {
+  return {
+    app: state.app.app,
+  };
+};
+export default connect(mapState)(QuestionCard);

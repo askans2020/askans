@@ -1,13 +1,23 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { firestore } from "firebase";
-import firebase, { db } from "../../firebaseConfig";
+import firebase, { db, storage } from "../../firebaseConfig";
+import uuid from "react-native-uuid";
 
 const askQuestion = createAsyncThunk(
   "questions/askQuestion",
   async (questionInfo) => {
     const ref = db.collection("Questions").doc();
-    const { userId, title, text, category, language } = questionInfo;
+    const { userId, title, text, category, language, imageBlob } = questionInfo;
+    let imageLink = "";
+    if (imageBlob) {
+      let newImageName = uuid.v1();
+      let imageRef = await storage.ref(`images/${newImageName}`).put(imageBlob);
 
+      imageLink = await storage
+        .ref("images")
+        .child(newImageName)
+        .getDownloadURL();
+    }
     let questionData = {
       id: ref.id,
       askedBy: userId,
@@ -19,8 +29,8 @@ const askQuestion = createAsyncThunk(
       upvotes: 0,
       downvotes: 0,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      hasImage: false,
-      imageLink: "",
+      hasImage: imageBlob ? true : false,
+      imageLink: imageLink,
       upvotedBy: [],
       downvotedBy: [],
     };

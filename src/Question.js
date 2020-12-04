@@ -22,6 +22,7 @@ import {
   downvoteAnswer,
 } from "./redux/questionReducer";
 import { incrementAnswerCount } from "./redux/questionsReducer";
+import { app } from "firebase";
 
 class Question extends Component {
   state = {
@@ -107,6 +108,7 @@ class Question extends Component {
     await this.handleGetQuestionAnswers(questionId);
   };
   render() {
+    const { app } = this.props;
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -147,10 +149,13 @@ class Question extends Component {
                   : false
               }
               id={this.props.question.id}
+              imageLink={this.props.question.imageLink}
             />
           ) : null}
           <View style={{ margin: 10 }}>
-            <Text style={{ fontWeight: "bold", fontSize: 20 }}>Answers:</Text>
+            <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+              {app.answersTitle}:
+            </Text>
           </View>
           <View style={{ padding: 5 }}>
             {this.props.answers.map((answer, key) => (
@@ -203,7 +208,7 @@ class Question extends Component {
           >
             <TextInput
               style={styles.textInput}
-              placeholder="Answer..."
+              placeholder={app.answerPlaceHolder}
               value={this.state.answer}
               onChangeText={(text) =>
                 this.setState({ ...this.state, answer: text })
@@ -259,6 +264,7 @@ const mapState = (state) => {
     user: state.user,
     question: state.question.question,
     answers: state.question.answers,
+    app: state.app.app,
   };
 };
 const actionCreators = {

@@ -8,12 +8,13 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { connect } from "react-redux";
 import { Button, Input } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import firebase, { db } from "../firebaseConfig";
 import DropDownPicker from "react-native-dropdown-picker";
 
-const Register = ({ navigation }) => {
+const Register = ({ navigation, app }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -74,7 +75,9 @@ const Register = ({ navigation }) => {
             answersCount: 0,
             language: language.value,
           };
+          console.log(userData);
           db.collection("Users").doc(user.uid).set(userData);
+          console.log("Registered");
           setFirstName("");
           setLastName("");
           setEmail("");
@@ -99,77 +102,82 @@ const Register = ({ navigation }) => {
                 fontWeight: "bold",
               }}
             >
-              {error.message}
+              {app.checkPassOrEmail}
             </Text>
           ) : null}
 
           <Input
-            placeholder="First name"
+            placeholder={app.firstName}
             leftIcon={<Icon name="user" size={24} color="black" />}
             onChangeText={(firstName) => setFirstName(firstName)}
             value={firstName}
           />
           <Input
-            placeholder="Last name"
+            placeholder={app.lastName}
             leftIcon={<Icon name="user" size={24} color="black" />}
             onChangeText={(lastName) => setLastName(lastName)}
             value={lastName}
           />
           <Input
-            placeholder="Email"
+            placeholder={app.emailAddress}
             leftIcon={<Icon name="envelope" size={24} color="black" />}
             onChangeText={(email) => setEmail(email)}
             value={email}
           />
           <Input
-            placeholder="Password"
+            placeholder={app.password}
             leftIcon={<Icon name="key" size={24} color="black" />}
             onChangeText={(password) => setPassword(password)}
             secureTextEntry={true}
             value={password}
+            textContentType="newPassword"
           />
-          <View style={{ marginBottom: 10, zIndex: 100 }}>
-            <DropDownPicker
-              items={[
-                {
-                  label: "ENGLISH",
-                  value: "English",
-                },
-                {
-                  label: "AMHARIC",
-                  value: "Amharic",
-                },
-                {
-                  label: "SPANISH",
-                  value: "Spanish",
-                },
-              ]}
-              defaultValue={language.value}
-              containerStyle={{ height: 40 }}
-              style={{
-                backgroundColor: "#fafafa",
-                marginHorizontal: 10,
-                fontSize: 13,
-              }}
-              itemStyle={{
-                justifyContent: "flex-start",
-              }}
-              dropDownStyle={{ backgroundColor: "#fafafa" }}
-              onChangeItem={(item) => setLanguage(item)}
-            />
-          </View>
+          <DropDownPicker
+            items={[
+              {
+                label: "ENGLISH",
+                value: "English",
+              },
+              {
+                label: "AMHARIC",
+                value: "Amharic",
+              },
+              {
+                label: "OROMIFFA",
+                value: "Oromiffa",
+              },
+              {
+                label: "SPANISH",
+                value: "Spanish",
+              },
+            ]}
+            zIndex={100}
+            defaultValue={language.value}
+            containerStyle={{ height: 40, marginBottom: 15 }}
+            style={{
+              backgroundColor: "#fafafa",
+              marginHorizontal: 10,
+              fontSize: 13,
+            }}
+            itemStyle={{
+              justifyContent: "flex-start",
+            }}
+            dropDownStyle={{ backgroundColor: "#fafafa" }}
+            onChangeItem={(item) => setLanguage(item)}
+          />
           <Button
-            title="Sign Up"
+            title={app.signUp}
             style={styles.signUpButton}
+            buttonStyle={{ marginHorizontal: 10 }}
             onPress={() => {
               registerUser(firstName, lastName, email, password);
-              //navigation.navigate("Home");
             }}
           />
-          <Text style={styles.question}>You already have an account?</Text>
+          <Text style={styles.question}>{app.haveAcnt}</Text>
           <Button
-            title="Sign In Here"
+            title={app.signInHere}
             style={styles.signUpButton}
+            buttonStyle={{ marginHorizontal: 10 }}
             type="outline"
             onPress={() => navigation.navigate("Login")}
           />
@@ -197,4 +205,9 @@ const styles = StyleSheet.create({
     margin: 10,
   },
 });
-export default Register;
+const mapState = (state) => {
+  return {
+    app: state.app.app,
+  };
+};
+export default connect(mapState)(Register);

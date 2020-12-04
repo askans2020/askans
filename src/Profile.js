@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import { View, Text, ScrollView } from "react-native";
-import { Header, Icon, Avatar, ButtonGroup } from "react-native-elements";
+import {
+  Header,
+  Icon,
+  Avatar,
+  ButtonGroup,
+  Divider,
+} from "react-native-elements";
 import QuestionCard from "./components/QuestionCard";
 import { connect } from "react-redux";
 import { getQuestionsByUserId } from "./redux/questionsReducer";
@@ -8,6 +14,7 @@ import {
   upvoteQuestionFromUserProfile,
   downvoteQuestionFromUserProfile,
 } from "./redux/questionsReducer";
+import firebase from "../firebaseConfig";
 
 class Profile extends Component {
   state = {
@@ -27,7 +34,8 @@ class Profile extends Component {
     });
   };
   handleUpvote = async (questionId, askedBy) => {
-    const questionInfo = { userId: this.props.user.uid, questionId, askedBy };
+    let userId = this.props.user.uid;
+    const questionInfo = { userId, questionId, askedBy };
     await this.props.upvoteQuestionFromUserProfile(questionInfo);
   };
 
@@ -96,14 +104,17 @@ class Profile extends Component {
               </Text>
             </View>
           </View>
-          <View>
+
+          <Divider
+            style={{ backgroundColor: "gray", height: 0.25, margin: 10 }}
+          />
+          {/* <View>
             <ButtonGroup
               selectedIndex={0}
               buttons={["Questions", "Answers"]}
               containerStyle={{}}
             />
-          </View>
-
+          </View> */}
           <View style={{ padding: 5 }}>
             {this.props.questions
               ? this.props.questions.map((question, key) => {
@@ -136,6 +147,8 @@ class Profile extends Component {
                           : false
                       }
                       id={question.id}
+                      imageLink={question.imageLink}
+                      readMore={true}
                     />
                   );
                 })
