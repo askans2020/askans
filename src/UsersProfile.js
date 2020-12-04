@@ -88,14 +88,14 @@ class UsersProfile extends Component {
               </Text>
             </View>
           </View>
-          <View>
+
+          {/* <View>
             <ButtonGroup
               selectedIndex={0}
               buttons={["Questions", "Answers"]}
               containerStyle={{}}
             />
-          </View>
-
+          </View> */}
           <View style={{ padding: 5 }}>
             {this.props.questions
               ? this.props.questions.map((question, key) => {

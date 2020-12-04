@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import { View, Text, ScrollView } from "react-native";
-import { Header, Icon, Avatar, ButtonGroup } from "react-native-elements";
+import {
+  Header,
+  Icon,
+  Avatar,
+  ButtonGroup,
+  Divider,
+} from "react-native-elements";
 import QuestionCard from "./components/QuestionCard";
 import { connect } from "react-redux";
 import { getQuestionsByUserId } from "./redux/questionsReducer";
@@ -98,14 +104,17 @@ class Profile extends Component {
               </Text>
             </View>
           </View>
-          <View>
+
+          <Divider
+            style={{ backgroundColor: "gray", height: 0.25, margin: 10 }}
+          />
+          {/* <View>
             <ButtonGroup
               selectedIndex={0}
               buttons={["Questions", "Answers"]}
               containerStyle={{}}
             />
-          </View>
-
+          </View> */}
           <View style={{ padding: 5 }}>
             {this.props.questions
               ? this.props.questions.map((question, key) => {

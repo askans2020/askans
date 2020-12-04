@@ -75,7 +75,9 @@ const Register = ({ navigation, app }) => {
             answersCount: 0,
             language: language.value,
           };
+          console.log(userData);
           db.collection("Users").doc(user.uid).set(userData);
+          console.log("Registered");
           setFirstName("");
           setLastName("");
           setEmail("");
@@ -128,6 +130,7 @@ const Register = ({ navigation, app }) => {
             onChangeText={(password) => setPassword(password)}
             secureTextEntry={true}
             value={password}
+            textContentType="newPassword"
           />
           <DropDownPicker
             items={[

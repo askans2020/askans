@@ -119,8 +119,8 @@ class Ask extends Component {
       console.log(e);
     }
   };
-  componentDidMount = () => {
-    this.getCategories();
+  componentDidMount = async () => {
+    await this.getCategories();
   };
   render() {
     const { app } = this.props;

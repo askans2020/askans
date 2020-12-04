@@ -51,14 +51,14 @@ const initialState = {
       next: "ቀጣይ",
       emailAddress: "የ ኢሜል አድራሻ",
       password: "የይለፍ ቃል",
-      signIn: "ግባ",
-      dontHaveAnAccount: "መለያ የለዎትም?",
+      signIn: "ይግቡ",
+      dontHaveAnAccount: "አካውንት የለዎትም?",
       signUpHere: "እዚህ ይመዝገቡ",
       checkPassOrEmail: "የይለፍ ቃልዎን ወይም ኢሜልዎን ያረጋግጡ",
       firstName: "የመጀመሪያ ስም",
       lastName: "የአያት ሥም",
       signUp: "ይመዝገቡ",
-      haveAcnt: "ቀድሞውኑ መለያ አለዎት?",
+      haveAcnt: "ከዚህ በፊት አካውንት ነበርዎት?",
       signUpErr: "ሁሉንም አስፈላጊ መስኮች እንደሞሉ ያረጋግጡ",
       signInHere: "እዚህ ይግቡ",
       upvotes: "ከፍ",
@@ -68,26 +68,26 @@ const initialState = {
       addQuestionTitle: "የጥያቄ ርዕስ ያክሉ።",
       addQuestionDetail: "ለጥያቄዎ ተጨማሪ ዝርዝሮችን ያክሉ።",
       attachImage: "ምስል ያያይዙ",
-      removeImage: "ምስል ተያይዙል (ለማስወገድ ጠቅ ያድርጉ)",
+      removeImage: "ምስል ተያይዟል (ለማጥፋት ይህንን ይጫኑ)",
       selectCategory: "ምድብ ይምረጡ",
-      ask: "ጠይቅ",
-      ANSWER_QUESTION: "ለጥያቄህ መልስ ሰጠ ፡፡",
+      ask: "ይጠይቁ",
+      ANSWER_QUESTION: "ለጥያቄዎ መልስ ሰጥተዋል፡፡",
       UPVOTE_QUESTION: "ጥያቄዎን ከፍ አድርገውታል።",
       DOWNVOTE_QUESTION: "ጥያቄዎን ዝቅ አድርገውታል።",
       DOWNVOTE_ANSWER: "መልስዎን ዝቅ አድርገዋል",
       UPVOTE_ANSWER: "መልስዎን ከፍ አድርገዋል",
-      updateBio: "የህይወት ታሪክን ያዘምኑ...",
-      updateBioButton: "አዘምን",
+      updateBio: "ፅሁፎን ያድሱ...",
+      updateBioButton: "ያድሱ",
       languageName: "ቋንቋ",
       MALE: "ወንድ",
       FEMALE: "ሴት",
       gender: "ፆታ",
-      updateInfo: "መረጃን ያዘምኑ",
+      updateInfo: "መረጃዎን ያድሱ",
       answersTitle: "መልሶች",
       answerPlaceHolder: "መልስ...",
     },
     {
-      language: "Amharic",
+      language: "Oromiffa",
       selectLanguage: "Afaan filadha",
       next: "Ittanaa",
       emailAddress: "Tessoo imelaa",
@@ -176,11 +176,9 @@ const appSlice = createSlice({
   initialState,
   reducers: {
     setAppLanguage: (state, action) => {
-      console.log(state);
       state.languages.map((language) => {
         if (language.language == action.payload) {
           state.app = language;
-          console.log(state.app);
           state.selectedLanguage = language.language;
         }
         return language;
