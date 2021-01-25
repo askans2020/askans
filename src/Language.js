@@ -15,7 +15,7 @@ class Language extends Component {
       console.log(language);
       this.props.setAppLanguage(language);
     } else {
-      this.props.setAppLanguage("English");
+      //this.props.setAppLanguage("English");
     }
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
